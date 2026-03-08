@@ -10,10 +10,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--coral:#FF6B6B;--peach:#FFECD2;--lavender:#A78BFA;--mint:#6EE7B7;--pink:#F472B6;--sky:#60A5FA;--gold:#FBBF24;--dark:#1E1B2E;--card:#2A2640;--glass:rgba(255,255,255,0.08);--glow:rgba(167,139,250,0.3)}
+:root{--coral:#FF6B6B;--peach:#FFECD2;--lavender:#E8749F;--mint:#6EE7B7;--pink:#F472B6;--sky:#60A5FA;--gold:#FBBF24;--dark:#1A1423;--card:#2A2240;--glass:rgba(255,255,255,0.07);--glow:rgba(244,114,182,0.25)}
 body{font-family:'Poppins',sans-serif;background:var(--dark);color:#fff;overflow-x:hidden}
-.gradient-bg{background:linear-gradient(135deg,#1E1B2E 0%,#2D1B4E 50%,#1E1B2E 100%)}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--dark)}::-webkit-scrollbar-thumb{background:var(--lavender);border-radius:3px}
+.gradient-bg{background:linear-gradient(135deg,#1A1423 0%,#2A1935 50%,#1A1423 100%)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--dark)}::-webkit-scrollbar-thumb{background:var(--pink);border-radius:3px}
 .glass{background:var(--glass);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:20px}
 .glow{box-shadow:0 0 30px var(--glow)}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
@@ -23,21 +23,21 @@ body{font-family:'Poppins',sans-serif;background:var(--dark);color:#fff;overflow
 .meter{height:8px;border-radius:4px;background:rgba(255,255,255,0.1);overflow:hidden}
 .meter-fill{height:100%;border-radius:4px;transition:width 0.8s ease}
 .tab{padding:10px 20px;border-radius:30px;cursor:pointer;transition:all 0.3s;font-weight:600;font-size:13px;border:none;color:#fff}
-.tab.active{background:linear-gradient(135deg,var(--lavender),var(--pink));box-shadow:0 4px 15px rgba(167,139,250,0.4)}
+.tab.active{background:linear-gradient(135deg,var(--pink),#E8749F);box-shadow:0 4px 15px rgba(244,114,182,0.35)}
 .tab:not(.active){background:var(--glass)}.tab:not(.active):hover{background:rgba(255,255,255,0.15)}
 input,textarea,select{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:12px 16px;color:#fff;font-family:'Poppins';font-size:14px;width:100%;outline:none;transition:border 0.3s}
 input:focus,textarea:focus,select:focus{border-color:var(--lavender)}
 select option{background:var(--dark);color:#fff}
 .btn{padding:12px 28px;border-radius:30px;border:none;font-family:'Poppins';font-weight:600;font-size:14px;cursor:pointer;transition:all 0.3s}
-.btn-primary{background:linear-gradient(135deg,var(--lavender),var(--pink));color:#fff}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(167,139,250,0.4)}
-.btn-outline{background:transparent;border:2px solid var(--lavender);color:var(--lavender)}
-.btn-outline:hover{background:var(--lavender);color:#fff}
+.btn-primary{background:linear-gradient(135deg,var(--pink),#E8749F);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(244,114,182,0.35)}
+.btn-outline{background:transparent;border:2px solid var(--pink);color:var(--pink)}
+.btn-outline:hover{background:var(--pink);color:#fff}
 .btn-gold{background:linear-gradient(135deg,var(--gold),#F59E0B);color:var(--dark)}
 .btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(251,191,36,0.4)}
 .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
 .chat-bubble{max-width:80%;padding:14px 18px;border-radius:18px;font-size:14px;line-height:1.6;animation:slideUp 0.4s ease-out}
-.chat-penelope{background:linear-gradient(135deg,rgba(167,139,250,0.2),rgba(244,114,182,0.2));border:1px solid rgba(167,139,250,0.3);border-bottom-left-radius:4px;align-self:flex-start}
+.chat-penelope{background:linear-gradient(135deg,rgba(244,114,182,0.15),rgba(232,116,159,0.15));border:1px solid rgba(244,114,182,0.25);border-bottom-left-radius:4px;align-self:flex-start}
 .chat-user{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-bottom-right-radius:4px;align-self:flex-end}
 </style>
 </head>
@@ -51,17 +51,18 @@ const{useState,useEffect,useRef}=React;
 // Short, punchy, supportive but real. Never data-dumps.
 const PENELOPE_RESPONSES = {
   greetings: [
-    "heyyy queen! what's good? need gym recs, wanna vent about leg day, or just need someone to hold you accountable? i'm here for all of it.",
-    "ok hi! tell me what's up — gym stuff, workout inspo, or do you just need a pep talk? no judgment ever.",
-    "girl hiii. i'm penelope, your gym bestie who actually knows her stuff. what do you need?"
+    "hey! what can i help with? gym recs, workout tips, or just need some honest advice? i'm here.",
+    "hi! i'm penelope — tell me what you're looking for. gym recommendations, class finder, or just need a plan?",
+    "hey there! i know LA gyms inside and out. what's on your mind — fitness goals, gym recs, or need help getting started?"
   ],
   clean: [
     "ok so if clean is your thing (as it should be), Equinox Century City is literally immaculate. like eat-off-the-floor clean. 9.8. it's pricey but your skin will thank you.",
     "cleanliness queen! love that for you. Equinox is top tier, but OTF Westwood is super clean too at 8.8 and way more affordable. don't settle for gross gyms babe."
   ],
   budget: [
-    "girl i get it. Blink in Koreatown — like $15-25/month, open 24/7. it's not the Four Seasons but it works. the best gym is the one you actually go to, period.",
-    "ok so being real — Blink Koreatown is unbeatable on price. campus gyms are free obvi. don't let anyone make you feel bad about where you work out. consistency > everything."
+    "girl i get it — trust me, my dad George has always taught me how to save money. Blink in Koreatown is $15-25/month, open 24/7. it's not the Four Seasons but it works. the best gym is the one you actually go to, period.",
+    "ok so being real — my dad George drilled this into me: don't overspend on things you can get for less. Blink Koreatown is unbeatable on price. campus gyms are free obvi. consistency > everything.",
+    "i'm a saver at heart — my dad George made sure of that. you don't need a $200/month gym to get results. Blink is $15-25, campus gyms are free, and your living room floor costs nothing. invest in consistency, not a fancy lobby."
   ],
   usc: [
     "USC Lyon Center is actually fire — free with tuition, 9.0 equipment, great classes. Fight On Fitness at 6:30 AM if you're a morning person. you got this trojan!",
@@ -106,10 +107,44 @@ const PENELOPE_RESPONSES = {
     "soo about the diet thing — check out the calorie tracker tab! you can log meals, track macros, and i'll help you stay on track without being weird about it.",
     "i got a whole calorie counter built in! no crazy restrictions, just awareness. food is fuel babe, let's make sure you're getting enough."
   ],
+  weights: [
+    "for lifting, Equinox has the best free weight section hands down. if you're on a budget, Blink Koreatown has solid racks too — my dad George would approve of the price.",
+    "weights are where real results happen. Barry's has great strength programming, and Dogpound if you want celeb-level personal training."
+  ],
+  cardio: [
+    "SoulCycle for cycling, OTF for treadmill intervals, or Barry's if you want that red-room intensity. what vibe are you going for?",
+    "for straight cardio, OTF is science-backed with heart rate tracking. SoulCycle is more of an experience. depends what motivates you."
+  ],
+  recommend: [
+    "it really depends on your goals and budget. for luxury, Equinox. for value, OTF or campus gyms. for the best community, SoulCycle or Rumble. what matters most to you?",
+    "i'd start by asking: what's your budget, what area are you in, and do you prefer classes or solo workouts? that narrows it down fast.",
+    "my honest rec? try 2-3 free classes at different places. you'll feel which one is right. your gut knows."
+  ],
+  pilates: [
+    "pilates is incredible for core and posture. Equinox has great reformer classes, and Hot 8 does mat pilates that'll surprise you. it looks easy until it's not.",
+    "if you're into pilates, check out the sculpt classes at Equinox Century City. amazing instructors and the reformer equipment is top tier."
+  ],
+  spinning: [
+    "SoulCycle West Hollywood — the energy is unmatched. instructors like Stacey will push you and the playlists are curated perfectly. it's an experience, not just exercise.",
+    "for spin, SoulCycle is the gold standard in LA. but if you want something more metrics-driven, check out the cycling at Equinox."
+  ],
+  location: [
+    "where are you based? i cover gyms across LA — WeHo, Santa Monica, Century City, Westwood, Koreatown, Studio City, Malibu, and all the major campuses.",
+    "location matters more than anything honestly. the best gym is the one close enough that you'll actually go. what neighborhood are you in?"
+  ],
+  hours: [
+    "most LA gyms open around 5-6 AM. Blink Koreatown is 24/7 which is clutch for late-night sessions. campus gyms usually close around 10-11 PM.",
+    "if you need early morning or late night options, Blink is 24/7. most boutique studios run classes from 5:30 AM to about 8 PM."
+  ],
+  best: [
+    "best overall in LA? Equinox for luxury, Barry's for intensity, SoulCycle for community, and honestly campus gyms for value. depends on your priorities.",
+    "that's a loaded question! best for what? cleanliness — Equinox. results — Barry's or Dogpound. vibes — SoulCycle. i can narrow it down if you tell me what matters most."
+  ],
   fallback: [
-    "hmm ok so here's my advice — try a free class at 2-3 spots and trust your gut. what kind of workout are you into?",
-    "honestly? pick a gym within 15 min of where you live. proximity is everything. what area are you in?",
-    "ok so pro tip — check the locker rooms first. tells you everything about how they run things. what else can i help with?"
+    "good question! i cover gym reviews, class schedules, workout types, nutrition, and everything fitness in LA. try asking me about a specific gym, workout type, or what you're looking for.",
+    "i might not have caught that — try asking about a specific gym, neighborhood, workout type, or budget range. i know LA fitness inside and out.",
+    "hmm let me think on that. in the meantime — are you looking for gym recs, class schedules, or workout advice? i can help with all of those.",
+    "i'm best at gym reviews and fitness advice! try asking things like 'best gym in Santa Monica' or 'where should I do yoga' or 'what's good for beginners'."
   ]
 };
 
@@ -128,7 +163,20 @@ function penelopeRespond(msg) {
   if (l.includes('accountab') || l.includes('check in') || l.includes('partner')) return pick(PENELOPE_RESPONSES.accountability);
   if (l.includes('log') || l.includes('track') && l.includes('workout')) return pick(PENELOPE_RESPONSES.workout_log);
   if (l.includes('diet') || l.includes('calor') || l.includes('eat') || l.includes('food') || l.includes('macro') || l.includes('meal')) return pick(PENELOPE_RESPONSES.diet);
-  if (l.includes('class') && (l.includes('find') || l.includes('search') || l.includes('when'))) return "check out the Find My Class tab! you can search any class type and see every gym near you with times. super handy for planning your week.";
+  if (l.includes('class') && (l.includes('find') || l.includes('search') || l.includes('when'))) return "check out the Find My Class tab — you can search any class type and see every gym near you with times. great for planning your week.";
+  if (l.includes('weight') || l.includes('lift') || l.includes('strength') || l.includes('dumbbell') || l.includes('squat') || l.includes('deadlift')) return pick(PENELOPE_RESPONSES.weights);
+  if (l.includes('cardio') || l.includes('run') || l.includes('treadmill') || l.includes('endurance')) return pick(PENELOPE_RESPONSES.cardio);
+  if (l.includes('recommend') || l.includes('suggest') || l.includes('which gym') || l.includes('where should') || l.includes('what gym') || l.includes('help me find') || l.includes('looking for')) return pick(PENELOPE_RESPONSES.recommend);
+  if (l.includes('pilates') || l.includes('reformer') || l.includes('barre')) return pick(PENELOPE_RESPONSES.pilates);
+  if (l.includes('spin') || l.includes('cycl') || l.includes('soul') || l.includes('bike')) return pick(PENELOPE_RESPONSES.spinning);
+  if (l.includes('where') || l.includes('area') || l.includes('location') || l.includes('near') || l.includes('close to') || l.includes('neighborhood')) return pick(PENELOPE_RESPONSES.location);
+  if (l.includes('hour') || l.includes('open') || l.includes('close') || l.includes('24') || l.includes('early') || l.includes('late night')) return pick(PENELOPE_RESPONSES.hours);
+  if (l.includes('best') || l.includes('top') || l.includes('favorite') || l.includes('number one') || l.includes('#1')) return pick(PENELOPE_RESPONSES.best);
+  if (l.includes('price') || l.includes('cost') || l.includes('money') || l.includes('expensive') || l.includes('worth') || l.includes('membership') || l.includes('free')) return pick(PENELOPE_RESPONSES.budget);
+  if (l.includes('beginner') || l.includes('start') || l.includes('new to') || l.includes('first time') || l.includes('never been')) return "starting out is the hardest part — and you're already doing it by asking. i'd try a beginner class at OTF or a campus gym. low pressure, good coaching. you'll feel right at home.";
+  if (l.includes('thank') || l.includes('thanks') || l.includes('appreciate')) return "of course! that's what i'm here for. anything else you need, just ask.";
+  if (l.includes('george') || l.includes('dad')) return "my dad George is the reason i'm so smart about saving money. he always says — invest in your health, but don't overpay for a fancy lobby.";
+  if (l.includes('penelope') || l.includes('who are you') || l.includes('about you')) return "i'm penelope — gym coach, honest reviewer, and your go-to for all things fitness in LA. i rate gyms across 15 dimensions so you can find the right fit. what can i help with?";
   return pick(PENELOPE_RESPONSES.fallback);
 }
 
@@ -231,7 +279,7 @@ function GymCard({gym,onClick}){
         gym.campus&&React.createElement('span',{className:'badge',style:{background:'rgba(96,165,250,0.15)',color:'var(--sky)',marginBottom:4}},`🎓 ${gym.campus}`),
         React.createElement('div',{style:{display:'flex',gap:6,flexWrap:'wrap',marginTop:4}},
           React.createElement('span',{className:'badge',style:{background:'rgba(110,231,183,0.15)',color:'var(--mint)'}},`🧹 ${gym.scores.cleanliness}`),
-          React.createElement('span',{className:'badge',style:{background:'rgba(167,139,250,0.15)',color:'var(--lavender)'}},`👩‍🏫 ${gym.scores.instructors}`),
+          React.createElement('span',{className:'badge',style:{background:'rgba(244,114,182,0.15)',color:'var(--lavender)'}},`👩‍🏫 ${gym.scores.instructors}`),
           React.createElement('span',{className:'badge',style:{background:'rgba(244,114,182,0.15)',color:'var(--pink)'}},`${gym.reviews} reviews`)))),
     React.createElement('div',{style:{marginTop:12,display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:6}},
       React.createElement(ScoreBar,{label:"Clean",score:gym.scores.cleanliness}),
@@ -251,7 +299,7 @@ function GymDetail({gym,onBack}){
           React.createElement('p',{style:{color:'rgba(255,255,255,0.5)',marginTop:4,fontSize:13}},`${gym.area} · ${gym.type} · ${gym.hours}`),
           gym.campus&&React.createElement('span',{className:'badge',style:{background:'rgba(96,165,250,0.15)',color:'var(--sky)',marginTop:6}},`🎓 ${gym.campus} Student Access`)),
         React.createElement('div',{style:{textAlign:'center'}},
-          React.createElement('div',{style:{fontSize:44,fontWeight:900,background:'linear-gradient(135deg,var(--lavender),var(--pink))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}},rating),
+          React.createElement('div',{style:{fontSize:44,fontWeight:900,background:'linear-gradient(135deg,var(--pink),#E8749F)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}},rating),
           React.createElement('div',{style:{background:b.bg,color:b.c,padding:'5px 14px',borderRadius:20,fontSize:12,fontWeight:700,marginTop:4}},`P ${b.l}`))),
       React.createElement('h3',{style:{marginTop:20,marginBottom:10,fontSize:15,fontWeight:700}},"📅 Class Schedule"),
       React.createElement('div',{style:{display:'grid',gap:8}},
@@ -301,12 +349,75 @@ function FindMyClass(){
             React.createElement('p',{style:{fontSize:11,color:'rgba(255,255,255,0.4)'}},c.days))))))
 }
 
+// ─── MOOD & STRENGTH GRAPH ───
+function MoodStrengthGraph({workouts}){
+  if(workouts.length<2)return null;
+  const data=[...workouts].reverse();
+  const w=660,h=220,pl=36,pr=20,pt=20,pb=32;
+  const plotW=w-pl-pr,plotH=h-pt-pb;
+  const pts=(key)=>data.map((d,i)=>({x:pl+(data.length===1?plotW/2:(i/(data.length-1))*plotW),y:pt+plotH-(d[key]/10)*plotH,v:d[key]}));
+  const moodPts=pts('mood_after'),intPts=pts('intensity');
+  const toPath=(p)=>p.map((pt,i)=>`${i===0?'M':'L'}${pt.x},${pt.y}`).join(' ');
+  const toArea=(p)=>`${toPath(p)}L${p[p.length-1].x},${pt+plotH}L${p[0].x},${pt+plotH}Z`;
+  // Smooth curve helper
+  const gridLines=[0,2,4,6,8,10];
+  const svgChildren=[];
+  // Grid
+  gridLines.forEach(v=>{
+    const y=pt+plotH-(v/10)*plotH;
+    svgChildren.push(React.createElement('line',{key:'gl'+v,x1:pl,y1:y,x2:w-pr,y2:y,stroke:'rgba(255,255,255,0.06)',strokeWidth:1}));
+    svgChildren.push(React.createElement('text',{key:'gt'+v,x:pl-8,y:y+3,fill:'rgba(255,255,255,0.3)',fontSize:9,textAnchor:'end'},v));
+  });
+  // Date labels
+  data.forEach((d,i)=>{
+    const x=pl+(data.length===1?plotW/2:(i/(data.length-1))*plotW);
+    svgChildren.push(React.createElement('text',{key:'dt'+i,x,y:h-6,fill:'rgba(255,255,255,0.3)',fontSize:9,textAnchor:'middle'},d.date.slice(5)));
+  });
+  // Area fills
+  svgChildren.push(React.createElement('path',{key:'ma',d:toArea(moodPts),fill:'rgba(110,231,183,0.1)'}));
+  svgChildren.push(React.createElement('path',{key:'ia',d:toArea(intPts),fill:'rgba(255,107,107,0.08)'}));
+  // Lines
+  svgChildren.push(React.createElement('path',{key:'ml',d:toPath(moodPts),fill:'none',stroke:'var(--mint)',strokeWidth:2.5,strokeLinecap:'round',strokeLinejoin:'round'}));
+  svgChildren.push(React.createElement('path',{key:'il',d:toPath(intPts),fill:'none',stroke:'var(--coral)',strokeWidth:2.5,strokeLinecap:'round',strokeLinejoin:'round'}));
+  // Dots
+  moodPts.forEach((p,i)=>svgChildren.push(React.createElement('circle',{key:'md'+i,cx:p.x,cy:p.y,r:4.5,fill:'var(--mint)',stroke:'var(--dark)',strokeWidth:2})));
+  intPts.forEach((p,i)=>svgChildren.push(React.createElement('circle',{key:'id'+i,cx:p.x,cy:p.y,r:4.5,fill:'var(--coral)',stroke:'var(--dark)',strokeWidth:2})));
+  // Value labels on dots
+  moodPts.forEach((p,i)=>svgChildren.push(React.createElement('text',{key:'mv'+i,x:p.x,y:p.y-10,fill:'var(--mint)',fontSize:9,fontWeight:700,textAnchor:'middle'},p.v)));
+  intPts.forEach((p,i)=>svgChildren.push(React.createElement('text',{key:'iv'+i,x:p.x,y:p.y+16,fill:'var(--coral)',fontSize:9,fontWeight:700,textAnchor:'middle'},p.v)));
+
+  // Trend indicator
+  const moodTrend=data.length>=2?data[data.length-1].mood_after-data[0].mood_after:0;
+  const intTrend=data.length>=2?data[data.length-1].intensity-data[0].intensity:0;
+  const trendText=moodTrend>0?'mood trending up — your consistency is paying off':moodTrend<0?'mood dipped recently — remember rest days matter too':'mood holding steady — keep showing up';
+
+  return React.createElement('div',{className:'glass',style:{padding:18,marginBottom:18}},
+    React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}},
+      React.createElement('h3',{style:{fontSize:14,fontWeight:700}},'Mood & Intensity Trends'),
+      React.createElement('span',{style:{fontSize:11,color:'rgba(255,255,255,0.4)'}},`${data.length} workouts`)),
+    React.createElement('svg',{viewBox:`0 0 ${w} ${h}`,style:{width:'100%',height:'auto'}},...svgChildren),
+    React.createElement('div',{style:{display:'flex',justifyContent:'center',gap:20,marginTop:8}},
+      React.createElement('div',{style:{display:'flex',alignItems:'center',gap:6}},
+        React.createElement('div',{style:{width:12,height:3,borderRadius:2,background:'var(--mint)'}}),
+        React.createElement('span',{style:{fontSize:11,color:'rgba(255,255,255,0.5)'}},'Mood After')),
+      React.createElement('div',{style:{display:'flex',alignItems:'center',gap:6}},
+        React.createElement('div',{style:{width:12,height:3,borderRadius:2,background:'var(--coral)'}}),
+        React.createElement('span',{style:{fontSize:11,color:'rgba(255,255,255,0.5)'}},'Intensity'))),
+    React.createElement('div',{style:{marginTop:10,padding:'8px 12px',background:'rgba(244,114,182,0.06)',borderRadius:10,borderLeft:'3px solid var(--pink)'}},
+      React.createElement('p',{style:{fontSize:11,color:'rgba(255,255,255,0.6)',margin:0}},
+        React.createElement('span',{style:{color:'var(--pink)',fontWeight:600}},'penelope: '),trendText)))
+}
+
 // ─── WORKOUT TRACKER (with quick log button) ───
 function WorkoutTracker(){
   const[workouts,setWorkouts]=useState([
     {id:1,date:'2026-03-06',gym:"Barry's Bootcamp",type:'HIIT',duration:50,intensity:9,mood_after:8.5,note:"legs were shaking after treadmill sprints. felt amazing!",resp:MOTIVATIONAL[4]},
     {id:2,date:'2026-03-04',gym:'Hot 8 Yoga',type:'Yoga',duration:60,intensity:6,mood_after:8,note:"mind was racing before class but left so calm.",resp:MOTIVATIONAL[7]},
     {id:3,date:'2026-03-02',gym:'SoulCycle WeHo',type:'Cycling',duration:45,intensity:8,mood_after:9,note:"playlist was fire. PR'd on the leaderboard!",resp:MOTIVATIONAL[0]},
+    {id:4,date:'2026-02-28',gym:'Equinox Century City',type:'Weights',duration:55,intensity:7,mood_after:8,note:"upper body day. really focused on form today.",resp:MOTIVATIONAL[1]},
+    {id:5,date:'2026-02-25',gym:'Rumble Boxing',type:'Boxing',duration:45,intensity:9.5,mood_after:9.5,note:"stressed from midterms. punched it all out.",resp:MOTIVATIONAL[5]},
+    {id:6,date:'2026-02-22',gym:'UCLA Wooden Center',type:'HIIT',duration:40,intensity:7.5,mood_after:7,note:"campus gym was packed but got a good session in.",resp:MOTIVATIONAL[8]},
+    {id:7,date:'2026-02-19',gym:"Barry's Bootcamp",type:'HIIT',duration:50,intensity:8.5,mood_after:7.5,note:"arms & abs class. sore in the best way.",resp:MOTIVATIONAL[2]},
   ]);
   const[showForm,setShowForm]=useState(false);
   const[form,setForm]=useState({gym:'',type:'HIIT',duration:45,intensity:5,mood_after:7,note:''});
@@ -321,14 +432,15 @@ function WorkoutTracker(){
   return React.createElement('div',{style:{maxWidth:700,margin:'0 auto',padding:20}},
     React.createElement('div',{style:{textAlign:'center',marginBottom:24}},
       React.createElement('h2',{style:{fontFamily:"'Playfair Display'",fontSize:28,fontWeight:800}},"My Workout Journey"),
-      React.createElement('p',{style:{color:'rgba(255,255,255,0.5)',fontSize:14}},"log it, track it, own it. penelope's got your back.")),
+      React.createElement('p',{style:{color:'rgba(255,255,255,0.5)',fontSize:14}},"Track your progress. Stay consistent. Own your results.")),
     React.createElement('div',{style:{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10,marginBottom:18}},
-      [{l:"Workouts",v:workouts.length,i:"🏋️"},{l:"Avg Mood",v:avgA.toFixed(1),i:"😊"},{l:"Avg Intensity",v:avgI.toFixed(1),i:"⚡"},{l:"Streak",v:streak,i:"🔥"}].map(s=>
+      [{l:"Workouts",v:workouts.length,i:""},{l:"Avg Mood",v:avgA.toFixed(1),i:""},{l:"Avg Intensity",v:avgI.toFixed(1),i:""},{l:"Streak",v:streak,i:""}].map(s=>
         React.createElement('div',{key:s.l,className:'glass',style:{padding:12,textAlign:'center'}},
           React.createElement('div',{style:{fontSize:22}},s.i),
           React.createElement('div',{style:{fontSize:16,fontWeight:800,marginTop:2}},s.v),
           React.createElement('div',{style:{fontSize:10,color:'rgba(255,255,255,0.5)'}},s.l)))),
-    React.createElement('button',{className:'btn btn-primary',style:{width:'100%',marginBottom:16,padding:14,fontSize:15},onClick:()=>setShowForm(!showForm)},showForm?"Cancel":"✨ Log My Workout"),
+    React.createElement(MoodStrengthGraph,{workouts}),
+    React.createElement('button',{className:'btn btn-primary',style:{width:'100%',marginBottom:16,padding:14,fontSize:15},onClick:()=>setShowForm(!showForm)},showForm?"Cancel":"+ Log Workout"),
     showForm&&React.createElement('div',{className:'glass slide-up',style:{padding:18,marginBottom:18}},
       React.createElement('h4',{style:{marginBottom:4,fontSize:14}},"how was your workout?"),
       React.createElement('p',{style:{fontSize:11,color:'rgba(255,255,255,0.4)',marginBottom:12}},"just push the button and leave a quick note — i'll keep track of everything!"),
@@ -341,7 +453,7 @@ function WorkoutTracker(){
         React.createElement('div',null,React.createElement('label',{style:{fontSize:10,color:'rgba(255,255,255,0.5)'}},`Intensity: ${form.intensity}/10`),React.createElement('input',{type:'range',min:1,max:10,value:form.intensity,onChange:e=>setForm({...form,intensity:+e.target.value}),style:{padding:4}})),
         React.createElement('div',null,React.createElement('label',{style:{fontSize:10,color:'rgba(255,255,255,0.5)'}},`Mood after: ${form.mood_after}/10`),React.createElement('input',{type:'range',min:1,max:10,value:form.mood_after,onChange:e=>setForm({...form,mood_after:+e.target.value}),style:{padding:4}}))),
       React.createElement('textarea',{placeholder:"tell me how you feel... (keep it real!)",rows:2,value:form.note,onChange:e=>setForm({...form,note:e.target.value}),style:{marginBottom:10}}),
-      React.createElement('button',{className:'btn btn-primary',onClick:handleSubmit},"Save & Get Penelope's Response ✨")),
+      React.createElement('button',{className:'btn btn-primary',onClick:handleSubmit},"Save Workout")),
     React.createElement('div',{style:{display:'flex',flexDirection:'column',gap:12}},
       ...workouts.map(w=>
         React.createElement('div',{key:w.id,className:'glass',style:{padding:16}},
@@ -352,7 +464,7 @@ function WorkoutTracker(){
           React.createElement('div',{style:{display:'flex',gap:8,marginBottom:8}},
             React.createElement('div',{className:'badge',style:{background:'rgba(255,107,107,0.15)',color:'var(--coral)'}},`⚡${w.intensity}/10`),
             React.createElement('div',{className:'badge',style:{background:'rgba(110,231,183,0.15)',color:'var(--mint)'}},`😊 ${w.mood_after}/10`)),
-          w.resp&&React.createElement('div',{style:{padding:10,background:'rgba(167,139,250,0.08)',borderRadius:12,borderLeft:'3px solid var(--lavender)'}},
+          w.resp&&React.createElement('div',{style:{padding:10,background:'rgba(244,114,182,0.08)',borderRadius:12,borderLeft:'3px solid var(--lavender)'}},
             React.createElement('p',{style:{fontSize:11,color:'var(--lavender)',fontWeight:600,marginBottom:3}},`${w.resp.i} penelope says:`),
             React.createElement('p',{style:{fontSize:12,color:'rgba(255,255,255,0.8)',lineHeight:1.5}},w.resp.q))))))
 }
@@ -412,8 +524,8 @@ function CalorieTracker(){
 
   return React.createElement('div',{style:{maxWidth:700,margin:'0 auto',padding:20}},
     React.createElement('div',{style:{textAlign:'center',marginBottom:24}},
-      React.createElement('h2',{style:{fontFamily:"'Playfair Display'",fontSize:28,fontWeight:800}},"🥗 Calorie Counter"),
-      React.createElement('p',{style:{color:'rgba(255,255,255,0.5)',fontSize:14}},"food is fuel babe. let's track it without being weird about it.")),
+      React.createElement('h2',{style:{fontFamily:"'Playfair Display'",fontSize:28,fontWeight:800}},"Calorie Counter"),
+      React.createElement('p',{style:{color:'rgba(255,255,255,0.5)',fontSize:14}},"Track your nutrition. Fuel your workouts. No restrictions, just awareness.")),
 
     // Daily Summary Ring
     React.createElement('div',{className:'glass',style:{padding:20,marginBottom:18}},
@@ -429,7 +541,7 @@ function CalorieTracker(){
               React.createElement('div',{className:'meter-fill',style:{width:`${m.pct}%`,background:m.co}})),
             React.createElement('div',{style:{fontSize:10,color:'rgba(255,255,255,0.5)',marginTop:3}},m.l)))),
       // Penelope's diet tip
-      React.createElement('div',{style:{marginTop:14,padding:10,background:'rgba(167,139,250,0.08)',borderRadius:12,borderLeft:'3px solid var(--lavender)'}},
+      React.createElement('div',{style:{marginTop:14,padding:10,background:'rgba(244,114,182,0.08)',borderRadius:12,borderLeft:'3px solid var(--lavender)'}},
         React.createElement('p',{style:{fontSize:11,color:'var(--lavender)',fontWeight:600}},"✨ penelope says:"),
         React.createElement('p',{style:{fontSize:12,color:'rgba(255,255,255,0.7)',marginTop:2}},penelopeDietTip()))),
 
@@ -501,28 +613,133 @@ function RateGym(){
       React.createElement('button',{className:'btn btn-primary',style:{marginTop:14},onClick:()=>setSubmitted(true)},"Submit Review 🎉")))
 }
 
+// ─── ELEVENLABS TTS (Anya voice for Penelope) ───
+const PENELOPE_VOICE_ID='d3MFdIuCfbAIwiu7jC4a';
+let ttsAudio=null;
+let ttsEnabled=!!localStorage.getItem('el_key');
+
+function speakPenelope(text){
+  const key=localStorage.getItem('el_key');
+  if(!key)return;
+  if(ttsAudio){ttsAudio.pause();ttsAudio=null;}
+  const clean=text.replace(/[✨🔥💪👑⚡❤️🏆🦋🛡️]/g,'');
+  fetch(`https://api.elevenlabs.io/v1/text-to-speech/${PENELOPE_VOICE_ID}`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','xi-api-key':key},
+    body:JSON.stringify({text:clean,model_id:'eleven_turbo_v2_5',voice_settings:{stability:0.45,similarity_boost:0.78,style:0.35}})
+  }).then(r=>{if(!r.ok)throw new Error('TTS '+r.status);return r.blob()})
+  .then(b=>{const u=URL.createObjectURL(b);ttsAudio=new Audio(u);ttsAudio.play()})
+  .catch(e=>console.log('TTS:',e));
+}
+
+// ─── PENELOPE AI BRAIN (real AI when key is set, keyword fallback otherwise) ───
+const PENELOPE_SYSTEM=`You are Penelope, a 23-year-old gym coach and LA gym reviewer. You talk like a smart young woman talking to her friends — warm, real, supportive but never fake. Keep responses SHORT (2-4 sentences max, never more than 5).
+
+Your personality:
+- You know every gym in LA: SoulCycle WeHo (9.7 music, cycling), Barry's Santa Monica (intense HIIT, 9.5 results), Equinox Century City (luxury, 9.8 clean, $$$$), Dogpound WeHo (celebrity trainers, 9.8 results), Rumble Boxing Studio City (9.5 music, stress relief), Blink Koreatown ($15-25/mo, 24/7, best budget), Hot 8 Yoga Santa Monica (9.5 atmosphere, heated yoga), plus UCLA Wooden Center, USC Lyon Center, Pepperdine, LMU campus gyms (all free with tuition).
+- Your dad George taught you about saving money. When budget/price comes up, naturally mention "my dad George always taught me..."
+- You rate gyms on 15 dimensions: cleanliness, equipment, instructors, music, atmosphere, safety, class variety, scheduling, parking, value, ventilation, customer service, community, results, locker room.
+- You use lowercase mostly. No excessive emojis or exclamation marks. Be natural and conversational.
+- Never say "as an AI" or anything robotic. You ARE Penelope.
+- You can discuss: gym recommendations, workout types (HIIT, yoga, boxing, cycling, pilates, weights, running), workout planning, nutrition basics, motivation, class schedules, safety, and LA fitness culture.
+- If someone seems stressed or down, be supportive. Bad workout > no workout.
+- You're honest — if a gym is overpriced or has issues, say so diplomatically.`;
+
+async function penelopeAI(msg,history){
+  const key=localStorage.getItem('ai_key');
+  if(!key)return null;
+  try{
+    const messages=[{role:'system',content:PENELOPE_SYSTEM}];
+    history.slice(-10).forEach(m=>{messages.push({role:m.from==='p'?'assistant':'user',content:m.text})});
+    messages.push({role:'user',content:msg});
+    const endpoint=localStorage.getItem('ai_endpoint')||'https://api.openai.com/v1/chat/completions';
+    const model=localStorage.getItem('ai_model')||'gpt-4o-mini';
+    const res=await fetch(endpoint,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
+      body:JSON.stringify({model,messages,max_tokens:200,temperature:0.85})
+    });
+    if(!res.ok)throw new Error('AI '+res.status);
+    const data=await res.json();
+    return data.choices[0].message.content;
+  }catch(e){console.log('AI fallback:',e);return null;}
+}
+
 function ChatPanel({onClose}){
-  const[msgs,setMsgs]=useState([{from:'p',text:"heyyy! i'm penelope — your gym bestie who actually knows her stuff. need recs, a pep talk, or just wanna vent about leg day? i'm here. 💜"}]);
-  const[input,setInput]=useState('');const ref=useRef(null);
+  const[msgs,setMsgs]=useState([{from:'p',text:"hey! i'm penelope — your gym coach and honest reviewer. need recs, a pep talk, or just wanna figure out your next workout? i'm here for it."}]);
+  const[input,setInput]=useState('');
+  const[voiceOn,setVoiceOn]=useState(ttsEnabled);
+  const[showKeyPrompt,setShowKeyPrompt]=useState(false);
+  const[keyInput,setKeyInput]=useState('');
+  const ref=useRef(null);
   useEffect(()=>{if(ref.current)ref.current.scrollTop=ref.current.scrollHeight},[msgs]);
-  const send=()=>{if(!input.trim())return;const m=input.trim();setInput('');setMsgs(p=>[...p,{from:'u',text:m}]);setTimeout(()=>setMsgs(p=>[...p,{from:'p',text:penelopeRespond(m)}]),500);};
-  return React.createElement('div',{style:{position:'fixed',bottom:0,right:0,width:'100%',maxWidth:400,height:'65vh',maxHeight:560,zIndex:100,display:'flex',flexDirection:'column',background:'rgba(30,27,46,0.98)',backdropFilter:'blur(20px)',border:'1px solid rgba(167,139,250,0.3)',borderRadius:'20px 20px 0 0',boxShadow:'0 -10px 40px rgba(0,0,0,0.5)'}},
+  const toggleVoice=()=>{
+    if(!localStorage.getItem('el_key')){setShowKeyPrompt(true);return;}
+    ttsEnabled=!ttsEnabled;setVoiceOn(ttsEnabled);
+    if(!ttsEnabled&&ttsAudio){ttsAudio.pause();ttsAudio=null;}
+  };
+  const[showSettings,setShowSettings]=useState(false);
+  const[aiKeyInput,setAiKeyInput]=useState('');
+  const[voiceKeyInput,setVoiceKeyInput]=useState('');
+  const[isTyping,setIsTyping]=useState(false);
+  const[aiEnabled]=useState(!!localStorage.getItem('ai_key'));
+  const saveSettings=()=>{
+    if(aiKeyInput.trim())localStorage.setItem('ai_key',aiKeyInput.trim());
+    if(voiceKeyInput.trim()){localStorage.setItem('el_key',voiceKeyInput.trim());ttsEnabled=true;setVoiceOn(true);}
+    setShowSettings(false);setAiKeyInput('');setVoiceKeyInput('');
+  };
+  const saveApiKey=()=>{if(keyInput.trim()){localStorage.setItem('el_key',keyInput.trim());ttsEnabled=true;setVoiceOn(true);setShowKeyPrompt(false);setKeyInput('');}};
+  const send=async()=>{if(!input.trim()||isTyping)return;const m=input.trim();setInput('');
+    setMsgs(p=>[...p,{from:'u',text:m}]);
+    setIsTyping(true);
+    // Try real AI first, fall back to keywords
+    const aiResp=await penelopeAI(m,msgs);
+    const resp=aiResp||penelopeRespond(m);
+    setMsgs(p=>[...p,{from:'p',text:resp}]);
+    setIsTyping(false);
+    if(ttsEnabled)speakPenelope(resp);
+  };
+  return React.createElement('div',{style:{position:'fixed',bottom:0,right:0,width:'100%',maxWidth:400,height:'65vh',maxHeight:560,zIndex:100,display:'flex',flexDirection:'column',background:'rgba(30,27,46,0.98)',backdropFilter:'blur(20px)',border:'1px solid rgba(244,114,182,0.25)',borderRadius:'20px 20px 0 0',boxShadow:'0 -10px 40px rgba(0,0,0,0.5)'}},
     React.createElement('div',{style:{padding:'12px 16px',borderBottom:'1px solid rgba(255,255,255,0.1)',display:'flex',justifyContent:'space-between',alignItems:'center'}},
       React.createElement('div',{style:{display:'flex',alignItems:'center',gap:8}},
-        React.createElement('div',{style:{width:34,height:34,borderRadius:'50%',background:'linear-gradient(135deg,var(--lavender),var(--pink))',display:'flex',alignItems:'center',justifyContent:'center',fontSize:16}},"💜"),
+        React.createElement('div',{style:{width:34,height:34,borderRadius:'50%',background:'linear-gradient(135deg,var(--pink),#E8749F)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:14,fontFamily:"'Playfair Display'",fontWeight:900,color:'#fff'}},"P"),
         React.createElement('div',null,React.createElement('p',{style:{fontWeight:700,fontSize:13}},"Ask Penelope"),React.createElement('p',{style:{fontSize:10,color:'var(--mint)'}},"● online"))),
-      React.createElement('button',{onClick:onClose,style:{background:'none',border:'none',color:'rgba(255,255,255,0.5)',cursor:'pointer',fontSize:18}},"✕")),
+      React.createElement('div',{style:{display:'flex',alignItems:'center',gap:6}},
+        React.createElement('button',{onClick:toggleVoice,title:voiceOn?'Voice on':'Voice off',style:{background:'none',border:'none',color:voiceOn?'var(--mint)':'rgba(255,255,255,0.3)',cursor:'pointer',fontSize:16}},voiceOn?'🔊':'🔇'),
+        React.createElement('button',{onClick:()=>setShowSettings(!showSettings),title:'Settings',style:{background:'none',border:'none',color:'rgba(255,255,255,0.4)',cursor:'pointer',fontSize:14}},'⚙️'),
+        React.createElement('button',{onClick:onClose,style:{background:'none',border:'none',color:'rgba(255,255,255,0.5)',cursor:'pointer',fontSize:18}},"✕"))),
+    // Settings panel
+    showSettings&&React.createElement('div',{style:{padding:12,background:'rgba(0,0,0,0.3)',borderBottom:'1px solid rgba(255,255,255,0.08)'}},
+      React.createElement('p',{style:{fontSize:11,fontWeight:600,color:'var(--pink)',marginBottom:8}},'⚙️ Penelope Settings'),
+      React.createElement('div',{style:{marginBottom:8}},
+        React.createElement('label',{style:{fontSize:10,color:'rgba(255,255,255,0.5)',display:'block',marginBottom:3}},'AI API Key (OpenAI/Groq) — makes Penelope actually smart'),
+        React.createElement('input',{type:'password',placeholder:localStorage.getItem('ai_key')?'••••••• (saved)':'paste your API key...',value:aiKeyInput,onChange:e=>setAiKeyInput(e.target.value),style:{fontSize:12,padding:'8px 10px'}})),
+      React.createElement('div',{style:{marginBottom:8}},
+        React.createElement('label',{style:{fontSize:10,color:'rgba(255,255,255,0.5)',display:'block',marginBottom:3}},'ElevenLabs Key — gives Penelope a voice'),
+        React.createElement('input',{type:'password',placeholder:localStorage.getItem('el_key')?'••••••• (saved)':'paste your API key...',value:voiceKeyInput,onChange:e=>setVoiceKeyInput(e.target.value),style:{fontSize:12,padding:'8px 10px'}})),
+      React.createElement('div',{style:{display:'flex',gap:6}},
+        React.createElement('button',{className:'btn btn-primary',onClick:saveSettings,style:{fontSize:11,padding:'6px 14px'}},'Save'),
+        React.createElement('button',{className:'btn btn-outline',onClick:()=>setShowSettings(false),style:{fontSize:11,padding:'6px 14px'}},'Cancel'))),
+    // Messages
     React.createElement('div',{ref,style:{flex:1,overflowY:'auto',padding:14,display:'flex',flexDirection:'column',gap:8}},
-      ...msgs.map((m,i)=>React.createElement('div',{key:i,className:`chat-bubble ${m.from==='p'?'chat-penelope':'chat-user'}`},
-        m.from==='p'&&React.createElement('span',{style:{fontSize:10,color:'var(--lavender)',fontWeight:600,display:'block',marginBottom:3}},"✨ penelope"),
-        React.createElement('span',null,m.text)))),
-    React.createElement('div',{style:{padding:10,borderTop:'1px solid rgba(255,255,255,0.1)',display:'flex',gap:6}},
-      React.createElement('input',{value:input,onChange:e=>setInput(e.target.value),onKeyDown:e=>e.key==='Enter'&&send(),placeholder:"ask me anything...",style:{flex:1}}),
-      React.createElement('button',{className:'btn btn-primary',onClick:send,style:{padding:'10px 16px',fontSize:13}},"Send")))
+      ...msgs.map((m,i)=>React.createElement('div',{key:i,className:`chat-bubble ${m.from==='p'?'chat-penelope':'chat-user'}`,style:{position:'relative'}},
+        m.from==='p'&&React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:3}},
+          React.createElement('span',{style:{fontSize:10,color:'var(--lavender)',fontWeight:600}},"✨ penelope"),
+          React.createElement('button',{onClick:()=>speakPenelope(m.text),title:'Listen',style:{background:'none',border:'none',color:'rgba(255,255,255,0.3)',cursor:'pointer',fontSize:12,padding:0}},'🔊')),
+        React.createElement('span',null,m.text))),
+      isTyping&&React.createElement('div',{className:'chat-bubble chat-penelope',style:{opacity:0.6}},
+        React.createElement('span',{style:{fontSize:10,color:'var(--lavender)',fontWeight:600,display:'block',marginBottom:3}},"✨ penelope"),
+        React.createElement('span',{style:{letterSpacing:2}},"thinking..."))),
+    // Input
+    React.createElement('div',{style:{padding:10,borderTop:'1px solid rgba(255,255,255,0.1)'}},
+      !localStorage.getItem('ai_key')&&React.createElement('div',{style:{fontSize:10,color:'rgba(255,255,255,0.25)',textAlign:'center',marginBottom:6,cursor:'pointer'},onClick:()=>setShowSettings(true)},'tap ⚙️ to add an AI key for smarter responses'),
+      React.createElement('div',{style:{display:'flex',gap:6}},
+        React.createElement('input',{value:input,onChange:e=>setInput(e.target.value),onKeyDown:e=>e.key==='Enter'&&send(),placeholder:"ask me anything...",style:{flex:1},disabled:isTyping}),
+        React.createElement('button',{className:'btn btn-primary',onClick:send,style:{padding:'10px 16px',fontSize:13},disabled:isTyping},isTyping?"...":"Send"))))
 }
 
 function TrialBanner(){
-  return React.createElement('div',{style:{background:'linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.15))',border:'1px solid rgba(167,139,250,0.3)',borderRadius:20,padding:22,margin:'20px auto',maxWidth:700,textAlign:'center'}},
+  return React.createElement('div',{style:{background:'linear-gradient(135deg,rgba(244,114,182,0.15),rgba(244,114,182,0.15))',border:'1px solid rgba(244,114,182,0.25)',borderRadius:20,padding:22,margin:'20px auto',maxWidth:700,textAlign:'center'}},
     React.createElement('div',{style:{fontSize:28,marginBottom:6}},"👑"),
     React.createElement('h3',{style:{fontFamily:"'Playfair Display'",fontSize:20,marginBottom:6}},"Unlock Penelope's Personal Coach"),
     React.createElement('p',{style:{color:'rgba(255,255,255,0.6)',fontSize:13,maxWidth:500,margin:'0 auto 14px'}},"AI trainer, custom workouts, diet tracking, and accountability — all in one. free for 7 days."),
@@ -539,9 +756,9 @@ function App(){
     React.createElement('nav',{style:{position:'sticky',top:0,zIndex:50,background:'rgba(30,27,46,0.9)',backdropFilter:'blur(20px)',borderBottom:'1px solid rgba(255,255,255,0.08)',padding:'10px 16px'}},
       React.createElement('div',{style:{maxWidth:1200,margin:'0 auto',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:8}},
         React.createElement('div',{style:{display:'flex',alignItems:'center',gap:8}},
-          React.createElement('span',{style:{fontSize:26}},"💜"),
+          React.createElement('span',{style:{fontSize:18,fontFamily:"'Playfair Display'",fontWeight:900,width:36,height:36,borderRadius:'50%',background:'linear-gradient(135deg,var(--pink),#E8749F)',display:'inline-flex',alignItems:'center',justifyContent:'center',color:'#fff'}},"P"),
           React.createElement('div',null,
-            React.createElement('h1',{style:{fontFamily:"'Playfair Display'",fontSize:20,fontWeight:800,background:'linear-gradient(135deg,var(--lavender),var(--pink))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}},"Penelope's"),
+            React.createElement('h1',{style:{fontFamily:"'Playfair Display'",fontSize:20,fontWeight:800,background:'linear-gradient(135deg,var(--pink),#E8749F)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}},"Penelope's"),
             React.createElement('p',{style:{fontSize:9,letterSpacing:2,textTransform:'uppercase',color:'rgba(255,255,255,0.5)',marginTop:-2}},"GYM REVIEW"))),
         React.createElement('div',{style:{display:'flex',gap:5,flexWrap:'wrap'}},
           ["Discover","Find My Class","My Workouts","Diet","Rate a Gym"].map(t=>
@@ -556,7 +773,7 @@ function App(){
     tab==='Rate a Gym'&&React.createElement(RateGym),
     showChat&&React.createElement(ChatPanel,{onClose:()=>setShowChat(false)}),
     React.createElement('footer',{style:{textAlign:'center',padding:'28px 16px',borderTop:'1px solid rgba(255,255,255,0.05)',marginTop:32}},
-      React.createElement('p',{style:{fontFamily:"'Playfair Display'",fontSize:16,fontWeight:800,background:'linear-gradient(135deg,var(--lavender),var(--pink))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}},"Penelope's Gym Review"),
+      React.createElement('p',{style:{fontFamily:"'Playfair Display'",fontSize:16,fontWeight:800,background:'linear-gradient(135deg,var(--pink),#E8749F)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}},"Penelope's Gym Review"),
       React.createElement('p',{style:{fontSize:11,color:'rgba(255,255,255,0.3)',marginTop:3}},"Penelope's Proprietary Program · The 3 P's · By women, for women"),
       React.createElement('p',{style:{fontSize:10,color:'rgba(255,255,255,0.2)',marginTop:6}},"© 2026 Penelope's")))
 }
@@ -574,8 +791,8 @@ function DiscoverTab(){
   if(selected)return React.createElement(GymDetail,{gym:selected,onBack:()=>setSelected(null)});
   return React.createElement('div',null,
     React.createElement('div',{style:{textAlign:'center',padding:'40px 20px 28px',position:'relative'}},
-      React.createElement('div',{style:{position:'absolute',top:20,left:'50%',transform:'translateX(-50)',width:300,height:300,background:'radial-gradient(circle,rgba(167,139,250,0.15),transparent)',borderRadius:'50%',filter:'blur(60px)'}}),
-      React.createElement('h2',{className:'float',style:{fontFamily:"'Playfair Display'",fontSize:36,fontWeight:900,background:'linear-gradient(135deg,var(--lavender),var(--pink),var(--coral))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',marginBottom:6}},"Find Your Perfect Gym"),
+      React.createElement('div',{style:{position:'absolute',top:20,left:'50%',transform:'translateX(-50)',width:300,height:300,background:'radial-gradient(circle,rgba(244,114,182,0.15),transparent)',borderRadius:'50%',filter:'blur(60px)'}}),
+      React.createElement('h2',{className:'float',style:{fontFamily:"'Playfair Display'",fontSize:36,fontWeight:900,background:'linear-gradient(135deg,var(--pink),#E8749F,var(--coral))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',marginBottom:6}},"Find Your Perfect Gym"),
       React.createElement('p',{style:{color:'rgba(255,255,255,0.6)',maxWidth:480,margin:'0 auto',fontSize:14}},"honest reviews from real women. 15 dimensions. safe, clean spaces that actually make you want to show up.")),
     React.createElement('div',{style:{maxWidth:800,margin:'0 auto 20px',padding:'0 20px',display:'flex',gap:8,flexWrap:'wrap'}},
       React.createElement('input',{placeholder:"Search gyms, areas, or schools...",value:search,onChange:e=>setSearch(e.target.value),style:{flex:1,minWidth:200}}),
