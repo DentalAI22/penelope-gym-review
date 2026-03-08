@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penelope's Gym Review | Find Your Perfect Workout Spot</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--coral:#FF6B6B;--peach:#FFECD2;--lavender:#A78BFA;--mint:#6EE7B7;--pink:#F472B6;--sky:#60A5FA;--gold:#FBBF24;--dark:#1E1B2E;--card:#2A2640;--glass:rgba(255,255,255,0.08);--glow:rgba(167,139,250,0.3)}
+body{font-family:'Poppins',sans-serif;background:var(--dark);color:#fff;overflow-x:hidden}
+.gradient-bg{background:linear-gradient(135deg,#1E1B2E 0%,#2D1B4E 50%,#1E1B2E 100%)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--dark)}::-webkit-scrollbar-thumb{background:var(--lavender);border-radius:3px}
+.glass{background:var(--glass);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:20px}
+.glow{box-shadow:0 0 30px var(--glow)}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.float{animation:float 3s ease-in-out infinite}
+.slide-up{animation:slideUp 0.6s ease-out forwards}
+.meter{height:8px;border-radius:4px;background:rgba(255,255,255,0.1);overflow:hidden}
+.meter-fill{height:100%;border-radius:4px;transition:width 0.8s ease}
+.tab{padding:10px 20px;border-radius:30px;cursor:pointer;transition:all 0.3s;font-weight:600;font-size:13px;border:none;color:#fff}
+.tab.active{background:linear-gradient(135deg,var(--lavender),var(--pink));box-shadow:0 4px 15px rgba(167,139,250,0.4)}
+.tab:not(.active){background:var(--glass)}.tab:not(.active):hover{background:rgba(255,255,255,0.15)}
+input,textarea,select{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:12px 16px;color:#fff;font-family:'Poppins';font-size:14px;width:100%;outline:none;transition:border 0.3s}
+input:focus,textarea:focus,select:focus{border-color:var(--lavender)}
+select option{background:var(--dark);color:#fff}
+.btn{padding:12px 28px;border-radius:30px;border:none;font-family:'Poppins';font-weight:600;font-size:14px;cursor:pointer;transition:all 0.3s}
+.btn-primary{background:linear-gradient(135deg,var(--lavender),var(--pink));color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(167,139,250,0.4)}
+.btn-outline{background:transparent;border:2px solid var(--lavender);color:var(--lavender)}
+.btn-outline:hover{background:var(--lavender);color:#fff}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#F59E0B);color:var(--dark)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(251,191,36,0.4)}
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+.chat-bubble{max-width:80%;padding:14px 18px;border-radius:18px;font-size:14px;line-height:1.6;animation:slideUp 0.4s ease-out}
+.chat-penelope{background:linear-gradient(135deg,rgba(167,139,250,0.2),rgba(244,114,182,0.2));border:1px solid rgba(167,139,250,0.3);border-bottom-left-radius:4px;align-self:flex-start}
+.chat-user{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-bottom-right-radius:4px;align-self:flex-end}
+</style>
+</head>
+<body class="gradient-bg">
+<div id="root"></div>
+<script type="text/babel">
+const{useState,useEffect,useRef}=React;
+
+// ─── PENELOPE AI PERSONALITY ───
+// She talks like a smart 22-25 year old woman talking to her girls
+// Short, punchy, supportive but real. Never data-dumps.
+const PENELOPE_RESPONSES = {
+  greetings: [
+    "heyyy queen! what's good? need gym recs, wanna vent about leg day, or just need someone to hold you accountable? i'm here for all of it.",
+    "ok hi! tell me what's up — gym stuff, workout inspo, or do you just need a pep talk? no judgment ever.",
+    "girl hiii. i'm penelope, your gym bestie who actually knows her stuff. what do you need?"
+  ],
+  clean: [
+    "ok so if clean is your thing (as it should be), Equinox Century City is literally immaculate. like eat-off-the-floor clean. 9.8. it's pricey but your skin will thank you.",
+    "cleanliness queen! love that for you. Equinox is top tier, but OTF Westwood is super clean too at 8.8 and way more affordable. don't settle for gross gyms babe."
+  ],
+  budget: [
+    "girl i get it. Blink in Koreatown — like $15-25/month, open 24/7. it's not the Four Seasons but it works. the best gym is the one you actually go to, period.",
+    "ok so being real — Blink Koreatown is unbeatable on price. campus gyms are free obvi. don't let anyone make you feel bad about where you work out. consistency > everything."
+  ],
+  usc: [
+    "USC Lyon Center is actually fire — free with tuition, 9.0 equipment, great classes. Fight On Fitness at 6:30 AM if you're a morning person. you got this trojan!",
+    "lyon center! solid choice. the bootcamp at 5 PM goes hard. if you want something off-campus, Rumble Boxing is a vibe. fight on babe."
+  ],
+  ucla: [
+    "Wooden Center is a whole vibe — free, tons of classes, great community. the Zumba on Fridays is lowkey the best stress relief. go Bruins!",
+    "UCLA gym is underrated tbh. they have spin, HIIT, yoga, Zumba — all free. plus OTF is walking distance from campus if you want to switch it up."
+  ],
+  yoga: [
+    "Hot 8 Yoga Santa Monica. trust me. 9.5 atmosphere, the heat is therapeutic, and you'll leave feeling like a completely different person. go.",
+    "ok yoga girl! Hot 8 is the move. the heated classes are chefs kiss. bring water, a towel, and zero expectations. just breathe."
+  ],
+  safety: [
+    "safety first always. Equinox has the best security at 9.5. campus gyms are great too — controlled access, well-lit, cameras everywhere. trust your gut always.",
+    "girl don't ever feel weird about checking if a gym feels safe. that's just being smart. Equinox and campus gyms are top tier for that."
+  ],
+  boxing: [
+    "Rumble Boxing in Studio City. the playlists are insane, instructors are hype, and nothing beats punching a bag after a tough week. 10/10 stress relief.",
+    "yesss boxing! Rumble is so good. 9.5 music score, the energy is unmatched. you'll feel like a baddie after every class."
+  ],
+  motivation: [
+    "hey. you showed up today. that's literally more than most people did. be proud of that ok?",
+    "listen — you don't have to feel motivated every single day. just go. your future self is gonna be so grateful.",
+    "bad workout > no workout. every single time. you got this and i mean that.",
+    "you're not behind. you're not late. you're exactly where you need to be. now go crush it.",
+    "remember why you started. not for anyone else — for YOU. that's the only reason that matters.",
+    "girl you are literally getting stronger every time you show up. even when it doesn't feel like it.",
+    "the days you don't wanna go are the most important days to go. i believe in you."
+  ],
+  accountability: [
+    "ok real talk — did you work out today? no shade if you didn't but let's make a plan for tomorrow.",
+    "hey just checking in! how's the workout game been this week? i'm keeping track you know.",
+    "pro tip: tell me your workout plan for the week and i'll bug you about it. that's literally what i'm here for."
+  ],
+  workout_log: [
+    "love that you logged it! do me a favor — at the end of every workout, just push that button and leave a quick note. i'll keep track of everything and we can go through your whole plan together. trust me, i'm sitting here — you're the one doing the work!",
+    "yesss tracked it! ok i see you being consistent. keep logging and i'll help you spot patterns. we're in this together babe.",
+    "noted! your mood went up after that workout which is literally the whole point. keep that energy."
+  ],
+  diet: [
+    "soo about the diet thing — check out the calorie tracker tab! you can log meals, track macros, and i'll help you stay on track without being weird about it.",
+    "i got a whole calorie counter built in! no crazy restrictions, just awareness. food is fuel babe, let's make sure you're getting enough."
+  ],
+  fallback: [
+    "hmm ok so here's my advice — try a free class at 2-3 spots and trust your gut. what kind of workout are you into?",
+    "honestly? pick a gym within 15 min of where you live. proximity is everything. what area are you in?",
+    "ok so pro tip — check the locker rooms first. tells you everything about how they run things. what else can i help with?"
+  ]
+};
+
+function penelopeRespond(msg) {
+  const l = msg.toLowerCase();
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+  if (l.match(/^(hi|hey|hello|sup|what'?s up|yo)/)) return pick(PENELOPE_RESPONSES.greetings);
+  if (l.includes('clean')) return pick(PENELOPE_RESPONSES.clean);
+  if (l.includes('cheap') || l.includes('budget') || l.includes('afford')) return pick(PENELOPE_RESPONSES.budget);
+  if (l.includes('usc') || l.includes('trojan')) return pick(PENELOPE_RESPONSES.usc);
+  if (l.includes('ucla') || l.includes('bruin')) return pick(PENELOPE_RESPONSES.ucla);
+  if (l.includes('yoga') || l.includes('stretch')) return pick(PENELOPE_RESPONSES.yoga);
+  if (l.includes('safe')) return pick(PENELOPE_RESPONSES.safety);
+  if (l.includes('box')) return pick(PENELOPE_RESPONSES.boxing);
+  if (l.includes('motivat') || l.includes('tired') || l.includes('hard') || l.includes('quit') || l.includes('can\'t') || l.includes('give up') || l.includes('lazy')) return pick(PENELOPE_RESPONSES.motivation);
+  if (l.includes('accountab') || l.includes('check in') || l.includes('partner')) return pick(PENELOPE_RESPONSES.accountability);
+  if (l.includes('log') || l.includes('track') && l.includes('workout')) return pick(PENELOPE_RESPONSES.workout_log);
+  if (l.includes('diet') || l.includes('calor') || l.includes('eat') || l.includes('food') || l.includes('macro') || l.includes('meal')) return pick(PENELOPE_RESPONSES.diet);
+  if (l.includes('class') && (l.includes('find') || l.includes('search') || l.includes('when'))) return "check out the Find My Class tab! you can search any class type and see every gym near you with times. super handy for planning your week.";
+  return pick(PENELOPE_RESPONSES.fallback);
+}
+
+// ─── MOTIVATIONAL QUOTES (short & punchy) ───
+const MOTIVATIONAL=[
+  {q:"you just showed up and did the work. that's 90% of the battle.",i:"🔥"},
+  {q:"every rep you just did is making future you stronger. keep going.",i:"🏆"},
+  {q:"the pain you felt? that's where the magic happens. embrace it.",i:"⚡"},
+  {q:"your journey, your pace. comparison is the thief of joy.",i:"⭐"},
+  {q:"the last few reps are where the growth happens. you pushed through.",i:"💪"},
+  {q:"you showed up when it was hard. that's not discipline, that's character.",i:"❤️"},
+  {q:"setbacks are setups for comebacks. remember that.",i:"🔥"},
+  {q:"growth isn't always visible but it's always happening. trust the process.",i:"🦋"},
+  {q:"you're in the gym while others make excuses. that IS the difference.",i:"👑"},
+  {q:"one bad day doesn't erase a week of progress. keep your head up.",i:"🛡️"},
+  {q:"you just invested in yourself. that's never a waste of time.",i:"🏆"},
+  {q:"hard workout? good. means you challenged yourself. easy doesn't change anything.",i:"⚡"},
+];
+
+const SCORE_LABELS={cleanliness:"Cleanliness",equipment:"Equipment Quality",instructors:"Instructor Quality",music:"Music & Energy",atmosphere:"Atmosphere",safety:"Safety & Security",classVariety:"Class Variety",scheduling:"Schedule Flex",parking:"Parking & Access",value:"Value for Money",ventilation:"Ventilation",customerService:"Customer Service",community:"Community Feel",results:"Results",lockerRoom:"Locker Room"};
+const SCORE_WEIGHTS={cleanliness:12,safety:10,instructors:10,equipment:8,atmosphere:8,results:8,community:7,music:7,value:7,classVariety:6,customerService:5,ventilation:4,scheduling:4,lockerRoom:2,parking:2};
+
+function calcP(scores){let w=0,t=0;Object.entries(SCORE_WEIGHTS).forEach(([k,v])=>{if(scores[k]){w+=scores[k]*v;t+=v}});return t>0?(w/t).toFixed(1):0}
+function getPBadge(r){if(r>=9)return{l:"PLATINUM P",bg:"linear-gradient(135deg,#E5E7EB,#F3F4F6)",c:"#111"};if(r>=8.5)return{l:"GOLD P",bg:"linear-gradient(135deg,#FBBF24,#F59E0B)",c:"#111"};if(r>=8)return{l:"SILVER P",bg:"linear-gradient(135deg,#9CA3AF,#6B7280)",c:"#fff"};if(r>=7)return{l:"BRONZE P",bg:"linear-gradient(135deg,#D97706,#92400E)",c:"#fff"};return{l:"RATED",bg:"rgba(255,255,255,0.2)",c:"#fff"}}
+
+const GYMS=[
+  {id:1,name:"SoulCycle West Hollywood",area:"West Hollywood",type:"Cycling",img:"🚴‍♀️",campus:null,scores:{cleanliness:9.2,equipment:8.8,instructors:9.5,music:9.7,atmosphere:9.4,safety:9.0,classVariety:8.5,scheduling:8.0,parking:6.5,value:7.0,ventilation:9.1,customerService:8.8,community:9.6,results:8.9,lockerRoom:8.5},reviews:142,price:"$$$$",hours:"5AM-9PM",vibe:"High-energy, empowering",topClass:"Full Body Ride",
+   classes:[{name:"Full Body Ride",time:"6:00 AM",days:"M/W/F",instructor:"Stacey"},{name:"Soul Activate",time:"7:30 AM",days:"Tu/Th",instructor:"Kat"},{name:"SoulCycle HIIT",time:"12:00 PM",days:"M/W/F",instructor:"James"},{name:"Soul Survivor",time:"5:30 PM",days:"Daily",instructor:"Various"}]},
+  {id:2,name:"Barry's Bootcamp Santa Monica",area:"Santa Monica",type:"HIIT",img:"🏋️‍♀️",campus:null,scores:{cleanliness:9.0,equipment:9.3,instructors:9.4,music:9.2,atmosphere:9.5,safety:8.8,classVariety:8.0,scheduling:8.5,parking:7.0,value:6.8,ventilation:8.5,customerService:9.0,community:9.2,results:9.5,lockerRoom:9.0},reviews:198,price:"$$$$",hours:"5:30AM-8PM",vibe:"Intense, red room energy",topClass:"Full Body",
+   classes:[{name:"Full Body",time:"6:00 AM",days:"M/W/F",instructor:"Dylan"},{name:"Arms & Abs",time:"7:15 AM",days:"Tu/Th",instructor:"Kira"},{name:"Chest & Back",time:"12:00 PM",days:"M/W",instructor:"Astrid"},{name:"Butt & Legs",time:"5:30 PM",days:"Tu/Th/Sa",instructor:"Marco"}]},
+  {id:3,name:"Equinox Century City",area:"Century City",type:"Full Gym",img:"🏛️",campus:null,scores:{cleanliness:9.8,equipment:9.7,instructors:9.0,music:8.5,atmosphere:9.3,safety:9.5,classVariety:9.5,scheduling:9.0,parking:8.5,value:5.5,ventilation:9.5,customerService:9.2,community:8.0,results:8.8,lockerRoom:9.8},reviews:256,price:"$$$$",hours:"5AM-11PM",vibe:"Luxury, premium",topClass:"Precision Run",
+   classes:[{name:"Precision Run",time:"6:30 AM",days:"M/W/F",instructor:"Coach T"},{name:"Sculpt",time:"8:00 AM",days:"Tu/Th/Sa",instructor:"Luna"},{name:"Vinyasa Flow",time:"10:00 AM",days:"Daily",instructor:"Elena"},{name:"HIIT Circuit",time:"5:45 PM",days:"M/W/F",instructor:"Raven"}]},
+  {id:4,name:"Orangetheory Westwood",area:"Westwood (UCLA)",type:"HIIT",img:"🧡",campus:"UCLA",scores:{cleanliness:8.8,equipment:8.5,instructors:8.9,music:8.5,atmosphere:8.7,safety:9.0,classVariety:7.5,scheduling:9.0,parking:7.5,value:7.8,ventilation:8.8,customerService:8.5,community:8.8,results:9.0,lockerRoom:8.0},reviews:167,price:"$$$",hours:"5AM-8:30PM",vibe:"Science-backed, supportive",topClass:"Orange 60",
+   classes:[{name:"Orange 60",time:"5:00 AM",days:"Daily",instructor:"Various"},{name:"Lift 45",time:"6:15 AM",days:"M/W/F",instructor:"Jamie"},{name:"Orange 60",time:"12:00 PM",days:"M-F",instructor:"Various"},{name:"ESP",time:"4:30 PM",days:"Tu/Th",instructor:"Sam"}]},
+  {id:5,name:"Dogpound West Hollywood",area:"West Hollywood",type:"Training",img:"🐕",campus:null,scores:{cleanliness:9.5,equipment:9.0,instructors:9.8,music:8.8,atmosphere:9.0,safety:9.2,classVariety:7.0,scheduling:7.5,parking:6.0,value:5.0,ventilation:9.0,customerService:9.5,community:8.5,results:9.8,lockerRoom:8.5},reviews:89,price:"$$$$",hours:"6AM-8PM",vibe:"Celebrity trainer energy",topClass:"Group Training",
+   classes:[{name:"Group Training",time:"7:00 AM",days:"M/W/F",instructor:"Kirk"},{name:"Body Sculpt",time:"9:00 AM",days:"Tu/Th",instructor:"Dawin"},{name:"Power Hour",time:"12:00 PM",days:"M/W",instructor:"Kirk"},{name:"Evening Grind",time:"6:00 PM",days:"Tu/Th",instructor:"Dawin"}]},
+  {id:6,name:"Rumble Boxing Studio City",area:"Studio City",type:"Boxing",img:"🥊",campus:null,scores:{cleanliness:8.5,equipment:8.8,instructors:9.2,music:9.5,atmosphere:9.3,safety:8.5,classVariety:7.0,scheduling:8.0,parking:8.0,value:7.5,ventilation:8.0,customerService:8.5,community:9.0,results:9.0,lockerRoom:7.5},reviews:134,price:"$$$",hours:"6AM-8PM",vibe:"Music-pumping, empowering",topClass:"Full Body Boxing",
+   classes:[{name:"Full Body Boxing",time:"6:00 AM",days:"M/W/F",instructor:"Tina"},{name:"Boxing & Strength",time:"7:30 AM",days:"Tu/Th/Sa",instructor:"Max"},{name:"Lunch Punch",time:"12:15 PM",days:"M-F",instructor:"Various"},{name:"Evening Rumble",time:"5:45 PM",days:"Daily",instructor:"Various"}]},
+  {id:7,name:"Blink Fitness Koreatown",area:"Koreatown",type:"Budget Gym",img:"💡",campus:null,scores:{cleanliness:7.5,equipment:7.8,instructors:6.5,music:7.0,atmosphere:7.5,safety:8.0,classVariety:6.0,scheduling:9.0,parking:6.5,value:9.5,ventilation:7.5,customerService:7.0,community:6.5,results:7.0,lockerRoom:6.5},reviews:203,price:"$",hours:"24/7",vibe:"Affordable, body-positive",topClass:"Open gym",
+   classes:[{name:"Open Gym",time:"24/7",days:"Daily",instructor:"Self"},{name:"Group Fitness",time:"9:00 AM",days:"Sa",instructor:"Guest"}]},
+  {id:8,name:"Hot 8 Yoga Santa Monica",area:"Santa Monica",type:"Yoga",img:"🧘‍♀️",campus:null,scores:{cleanliness:9.0,equipment:7.5,instructors:9.3,music:8.8,atmosphere:9.5,safety:9.0,classVariety:8.5,scheduling:8.5,parking:7.0,value:7.5,ventilation:7.0,customerService:9.0,community:9.2,results:8.5,lockerRoom:8.0},reviews:178,price:"$$$",hours:"6AM-9PM",vibe:"Zen meets heat",topClass:"Hot Power Vinyasa",
+   classes:[{name:"Hot Power Vinyasa",time:"6:00 AM",days:"Daily",instructor:"Various"},{name:"Yin Restore",time:"7:30 AM",days:"Su",instructor:"Kaia"},{name:"Hot 26",time:"10:00 AM",days:"M/W/F",instructor:"Various"},{name:"Sculpt Yoga",time:"5:30 PM",days:"Tu/Th",instructor:"Lily"}]},
+  {id:9,name:"UCLA Wooden Center",area:"Westwood (UCLA Campus)",type:"University Gym",img:"🐻",campus:"UCLA",scores:{cleanliness:8.0,equipment:8.5,instructors:7.5,music:6.5,atmosphere:8.0,safety:9.2,classVariety:9.0,scheduling:8.5,parking:5.0,value:9.8,ventilation:8.0,customerService:7.5,community:9.0,results:8.0,lockerRoom:7.0},reviews:312,price:"Free*",hours:"6AM-11PM",vibe:"Campus energy, inclusive",topClass:"Bruin HIIT",
+   classes:[{name:"Bruin HIIT",time:"7:00 AM",days:"M/W/F",instructor:"Student Staff"},{name:"Yoga Flow",time:"12:00 PM",days:"Tu/Th",instructor:"Guest"},{name:"Spin Class",time:"5:00 PM",days:"M/W",instructor:"Student Staff"},{name:"Pilates",time:"6:30 PM",days:"Tu/Th",instructor:"Guest"},{name:"Zumba",time:"7:00 PM",days:"F",instructor:"Various"}]},
+  {id:10,name:"USC Lyon Center",area:"University Park (USC Campus)",type:"University Gym",img:"✌️",campus:"USC",scores:{cleanliness:8.5,equipment:9.0,instructors:7.8,music:7.0,atmosphere:8.5,safety:9.0,classVariety:8.5,scheduling:8.0,parking:5.5,value:9.8,ventilation:8.5,customerService:7.8,community:8.8,results:8.2,lockerRoom:7.5},reviews:287,price:"Free*",hours:"6AM-10PM",vibe:"Trojan family, competitive",topClass:"Fight On Fitness",
+   classes:[{name:"Fight On Fitness",time:"6:30 AM",days:"M/W/F",instructor:"Staff"},{name:"TrojanCycle",time:"7:30 AM",days:"Tu/Th",instructor:"Staff"},{name:"Power Yoga",time:"12:00 PM",days:"M/W/F",instructor:"Guest"},{name:"Bootcamp",time:"5:00 PM",days:"M-Th",instructor:"Staff"},{name:"Boxing Basics",time:"6:00 PM",days:"Tu/Th",instructor:"Guest"}]},
+  {id:11,name:"Pepperdine Firestone Fieldhouse",area:"Malibu (Pepperdine)",type:"University Gym",img:"🌊",campus:"Pepperdine",scores:{cleanliness:8.8,equipment:8.0,instructors:7.5,music:7.0,atmosphere:9.0,safety:9.5,classVariety:7.0,scheduling:7.5,parking:8.0,value:9.8,ventilation:9.0,customerService:8.0,community:8.5,results:7.8,lockerRoom:8.0},reviews:98,price:"Free*",hours:"6AM-10PM",vibe:"Ocean views, serene",topClass:"Beach Yoga",
+   classes:[{name:"Beach Yoga",time:"7:00 AM",days:"Tu/Th/Sa",instructor:"Staff"},{name:"HIIT Circuit",time:"12:00 PM",days:"M/W/F",instructor:"Staff"},{name:"Pilates",time:"5:00 PM",days:"Tu/Th",instructor:"Guest"}]},
+  {id:12,name:"LMU Burns Rec Center",area:"Westchester (LMU)",type:"University Gym",img:"🦁",campus:"LMU",scores:{cleanliness:8.2,equipment:8.0,instructors:7.2,music:6.8,atmosphere:8.0,safety:9.0,classVariety:7.5,scheduling:7.5,parking:7.0,value:9.8,ventilation:8.0,customerService:7.5,community:8.2,results:7.5,lockerRoom:7.0},reviews:76,price:"Free*",hours:"6AM-10PM",vibe:"Tight-knit, friendly",topClass:"Group Fitness",
+   classes:[{name:"Group Fitness",time:"7:00 AM",days:"M/W/F",instructor:"Staff"},{name:"Spin",time:"12:00 PM",days:"Tu/Th",instructor:"Staff"},{name:"Yoga",time:"5:30 PM",days:"M/W",instructor:"Guest"}]},
+];
+
+// ─── FOOD DATABASE ───
+const FOOD_DB=[
+  {name:"Grilled Chicken Breast",cal:165,protein:31,carbs:0,fat:3.6,serving:"100g",cat:"Protein"},
+  {name:"Salmon Fillet",cal:208,protein:20,carbs:0,fat:13,serving:"100g",cat:"Protein"},
+  {name:"Greek Yogurt (plain)",cal:100,protein:17,carbs:6,fat:0.7,serving:"170g",cat:"Dairy"},
+  {name:"Egg (whole)",cal:72,protein:6.3,carbs:0.4,fat:4.8,serving:"1 large",cat:"Protein"},
+  {name:"Egg Whites (3)",cal:51,protein:11,carbs:0.7,fat:0.2,serving:"3 whites",cat:"Protein"},
+  {name:"Brown Rice",cal:216,protein:5,carbs:45,fat:1.8,serving:"1 cup cooked",cat:"Carbs"},
+  {name:"Sweet Potato",cal:103,protein:2.3,carbs:24,fat:0.1,serving:"1 medium",cat:"Carbs"},
+  {name:"Oatmeal",cal:154,protein:5.3,carbs:27,fat:2.6,serving:"1 cup cooked",cat:"Carbs"},
+  {name:"Avocado",cal:240,protein:3,carbs:13,fat:22,serving:"1 whole",cat:"Fats"},
+  {name:"Banana",cal:105,protein:1.3,carbs:27,fat:0.4,serving:"1 medium",cat:"Fruit"},
+  {name:"Apple",cal:95,protein:0.5,carbs:25,fat:0.3,serving:"1 medium",cat:"Fruit"},
+  {name:"Blueberries",cal:84,protein:1.1,carbs:21,fat:0.5,serving:"1 cup",cat:"Fruit"},
+  {name:"Spinach Salad",cal:23,protein:2.9,carbs:3.6,fat:0.4,serving:"2 cups",cat:"Veggie"},
+  {name:"Broccoli",cal:55,protein:3.7,carbs:11,fat:0.6,serving:"1 cup cooked",cat:"Veggie"},
+  {name:"Almonds",cal:164,protein:6,carbs:6,fat:14,serving:"1 oz (23 nuts)",cat:"Fats"},
+  {name:"Peanut Butter",cal:188,protein:8,carbs:6,fat:16,serving:"2 tbsp",cat:"Fats"},
+  {name:"Protein Shake",cal:120,protein:24,carbs:3,fat:1.5,serving:"1 scoop + water",cat:"Protein"},
+  {name:"Acai Bowl",cal:340,protein:5,carbs:62,fat:8,serving:"1 bowl",cat:"Meal"},
+  {name:"Chicken Salad Bowl",cal:380,protein:32,carbs:22,fat:18,serving:"1 bowl",cat:"Meal"},
+  {name:"Turkey Wrap",cal:310,protein:22,carbs:34,fat:10,serving:"1 wrap",cat:"Meal"},
+  {name:"Quinoa",cal:222,protein:8,carbs:39,fat:3.6,serving:"1 cup cooked",cat:"Carbs"},
+  {name:"Iced Matcha Latte",cal:120,protein:4,carbs:18,fat:3.5,serving:"16oz",cat:"Drink"},
+  {name:"Black Coffee",cal:2,protein:0.3,carbs:0,fat:0,serving:"8oz",cat:"Drink"},
+  {name:"Kombucha",cal:60,protein:0,carbs:14,fat:0,serving:"16oz",cat:"Drink"},
+];
+
+function ScoreBar({label,score}){
+  const pct=(score/10)*100;const color=score>=9?'var(--mint)':score>=8?'var(--sky)':score>=7?'var(--gold)':score>=6?'var(--coral)':'#EF4444';
+  return React.createElement('div',{style:{marginBottom:8}},
+    React.createElement('div',{style:{display:'flex',justifyContent:'space-between',fontSize:12,marginBottom:3}},
+      React.createElement('span',{style:{color:'rgba(255,255,255,0.7)'}},label),
+      React.createElement('span',{style:{fontWeight:600,color}},score.toFixed(1))),
+    React.createElement('div',{className:'meter'},React.createElement('div',{className:'meter-fill',style:{width:`${pct}%`,background:color}})))
+}
+
+function GymCard({gym,onClick}){
+  const rating=calcP(gym.scores);const b=getPBadge(parseFloat(rating));
+  return React.createElement('div',{className:'glass slide-up',onClick,style:{cursor:'pointer',padding:20,transition:'all 0.3s',position:'relative'}},
+    React.createElement('div',{style:{position:'absolute',top:12,right:12}},
+      React.createElement('div',{style:{background:b.bg,color:b.c,padding:'4px 12px',borderRadius:20,fontSize:11,fontWeight:700}},`P ${b.l} ${rating}`)),
+    React.createElement('div',{style:{display:'flex',gap:14,alignItems:'flex-start'}},
+      React.createElement('div',{style:{fontSize:36,width:56,height:56,display:'flex',alignItems:'center',justifyContent:'center',background:'rgba(255,255,255,0.05)',borderRadius:16}},gym.img),
+      React.createElement('div',{style:{flex:1}},
+        React.createElement('h3',{style:{fontSize:15,fontWeight:700,marginBottom:2}},gym.name),
+        React.createElement('p',{style:{fontSize:12,color:'rgba(255,255,255,0.5)',marginBottom:6}},`${gym.area} · ${gym.type} · ${gym.price}`),
+        gym.campus&&React.createElement('span',{className:'badge',style:{background:'rgba(96,165,250,0.15)',color:'var(--sky)',marginBottom:4}},`🎓 ${gym.campus}`),
+        React.createElement('div',{style:{display:'flex',gap:6,flexWrap:'wrap',marginTop:4}},
+          React.createElement('span',{className:'badge',style:{background:'rgba(110,231,183,0.15)',color:'var(--mint)'}},`🧹 ${gym.scores.cleanliness}`),
+          React.createElement('span',{className:'badge',style:{background:'rgba(167,139,250,0.15)',color:'var(--lavender)'}},`👩‍🏫 ${gym.scores.instructors}`),
+          React.createElement('span',{className:'badge',style:{background:'rgba(244,114,182,0.15)',color:'var(--pink)'}},`${gym.reviews} reviews`)))),
+    React.createElement('div',{style:{marginTop:12,display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:6}},
+      React.createElement(ScoreBar,{label:"Clean",score:gym.scores.cleanliness}),
+      React.createElement(ScoreBar,{label:"Vibe",score:gym.scores.atmosphere}),
+      React.createElement(ScoreBar,{label:"Safe",score:gym.scores.safety})))
+}
+
+function GymDetail({gym,onBack}){
+  const rating=calcP(gym.scores);const b=getPBadge(parseFloat(rating));const sorted=Object.entries(gym.scores).sort((a,b)=>b[1]-a[1]);
+  return React.createElement('div',{className:'slide-up',style:{maxWidth:700,margin:'0 auto',padding:20}},
+    React.createElement('button',{onClick:onBack,className:'btn btn-outline',style:{marginBottom:16,fontSize:13}},"← Back"),
+    React.createElement('div',{className:'glass',style:{padding:24}},
+      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:12}},
+        React.createElement('div',null,
+          React.createElement('div',{style:{fontSize:44,marginBottom:8}},gym.img),
+          React.createElement('h2',{style:{fontFamily:"'Playfair Display'",fontSize:26,fontWeight:800}},gym.name),
+          React.createElement('p',{style:{color:'rgba(255,255,255,0.5)',marginTop:4,fontSize:13}},`${gym.area} · ${gym.type} · ${gym.hours}`),
+          gym.campus&&React.createElement('span',{className:'badge',style:{background:'rgba(96,165,250,0.15)',color:'var(--sky)',marginTop:6}},`🎓 ${gym.campus} Student Access`)),
+        React.createElement('div',{style:{textAlign:'center'}},
+          React.createElement('div',{style:{fontSize:44,fontWeight:900,background:'linear-gradient(135deg,var(--lavender),var(--pink))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}},rating),
+          React.createElement('div',{style:{background:b.bg,color:b.c,padding:'5px 14px',borderRadius:20,fontSize:12,fontWeight:700,marginTop:4}},`P ${b.l}`))),
+      React.createElement('h3',{style:{marginTop:20,marginBottom:10,fontSize:15,fontWeight:700}},"📅 Class Schedule"),
+      React.createElement('div',{style:{display:'grid',gap:8}},
+        ...(gym.classes||[]).map((cls,i)=>
+          React.createElement('div',{key:i,style:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'10px 14px',background:'rgba(255,255,255,0.04)',borderRadius:12,border:'1px solid rgba(255,255,255,0.06)'}},
+            React.createElement('div',null,
+              React.createElement('span',{style:{fontWeight:600,fontSize:13}},cls.name),
+              React.createElement('span',{style:{fontSize:11,color:'rgba(255,255,255,0.4)',marginLeft:8}},cls.instructor)),
+            React.createElement('div',{style:{textAlign:'right'}},
+              React.createElement('span',{style:{fontSize:12,color:'var(--lavender)',fontWeight:600}},cls.time),
+              React.createElement('span',{style:{fontSize:11,color:'rgba(255,255,255,0.4)',marginLeft:8}},cls.days))))),
+      React.createElement('h3',{style:{marginTop:20,marginBottom:12,fontSize:15,fontWeight:700}},"📊 Full P-Rating Breakdown"),
+      React.createElement('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'4px 24px'}},
+        ...sorted.map(([k,v])=>React.createElement(ScoreBar,{key:k,label:SCORE_LABELS[k],score:v})))))
+}
+
+function FindMyClass(){
+  const [search,setSearch]=useState('');const [area,setArea]=useState('All');
+  const allClasses=[];
+  GYMS.forEach(g=>{(g.classes||[]).forEach(c=>{allClasses.push({...c,gymName:g.name,gymArea:g.area,gymImg:g.img,gymId:g.id,campus:g.campus,price:g.price})})});
+  const areas=['All',...new Set(GYMS.map(g=>g.area))];
+  let filtered=allClasses.filter(c=>{
+    const match=!search||c.name.toLowerCase().includes(search.toLowerCase())||c.gymName.toLowerCase().includes(search.toLowerCase());
+    const areaMatch=area==='All'||c.gymArea===area;
+    return match&&areaMatch;
+  });
+  return React.createElement('div',{style:{maxWidth:700,margin:'0 auto',padding:20}},
+    React.createElement('div',{style:{textAlign:'center',marginBottom:24}},
+      React.createElement('h2',{style:{fontFamily:"'Playfair Display'",fontSize:28,fontWeight:800}},"🔍 Find My Class"),
+      React.createElement('p',{style:{color:'rgba(255,255,255,0.5)',fontSize:14}},"Search classes & find where they're offered near you")),
+    React.createElement('div',{style:{display:'flex',gap:10,marginBottom:20,flexWrap:'wrap'}},
+      React.createElement('input',{placeholder:"Search classes... (yoga, HIIT, boxing, spin...)",value:search,onChange:e=>setSearch(e.target.value),style:{flex:1,minWidth:200}}),
+      React.createElement('select',{value:area,onChange:e=>setArea(e.target.value),style:{width:200}},
+        areas.map(a=>React.createElement('option',{key:a,value:a},a)))),
+    React.createElement('p',{style:{fontSize:12,color:'rgba(255,255,255,0.4)',marginBottom:14}},`${filtered.length} classes found`),
+    React.createElement('div',{style:{display:'flex',flexDirection:'column',gap:10}},
+      ...filtered.map((c,i)=>
+        React.createElement('div',{key:i,className:'glass',style:{padding:14,display:'flex',justifyContent:'space-between',alignItems:'center'}},
+          React.createElement('div',{style:{display:'flex',gap:12,alignItems:'center'}},
+            React.createElement('span',{style:{fontSize:28}},c.gymImg),
+            React.createElement('div',null,
+              React.createElement('p',{style:{fontWeight:600,fontSize:14}},c.name),
+              React.createElement('p',{style:{fontSize:12,color:'rgba(255,255,255,0.5)'}},`${c.gymName} · ${c.gymArea}`),
+              c.campus&&React.createElement('span',{className:'badge',style:{background:'rgba(96,165,250,0.15)',color:'var(--sky)',fontSize:10,marginTop:2}},`🎓 ${c.campus}`))),
+          React.createElement('div',{style:{textAlign:'right'}},
+            React.createElement('p',{style:{color:'var(--lavender)',fontWeight:600,fontSize:13}},c.time),
+            React.createElement('p',{style:{fontSize:11,color:'rgba(255,255,255,0.4)'}},c.days))))))
+}
+
+// ─── WORKOUT TRACKER (with quick log button) ───
+function WorkoutTracker(){
+  const[workouts,setWorkouts]=useState([
+    {id:1,date:'2026-03-06',gym:"Barry's Bootcamp",type:'HIIT',duration:50,intensity:9,mood_after:8.5,note:"legs were shaking after treadmill sprints. felt amazing!",resp:MOTIVATIONAL[4]},
+    {id:2,date:'2026-03-04',gym:'Hot 8 Yoga',type:'Yoga',duration:60,intensity:6,mood_after:8,note:"mind was racing before class but left so calm.",resp:MOTIVATIONAL[7]},
+    {id:3,date:'2026-03-02',gym:'SoulCycle WeHo',type:'Cycling',duration:45,intensity:8,mood_after:9,note:"playlist was fire. PR'd on the leaderboard!",resp:MOTIVATIONAL[0]},
+  ]);
+  const[showForm,setShowForm]=useState(false);
+  const[form,setForm]=useState({gym:'',type:'HIIT',duration:45,intensity:5,mood_after:7,note:''});
+  const avgA=workouts.length?workouts.reduce((s,w)=>s+w.mood_after,0)/workouts.length:0;
+  const avgI=workouts.length?workouts.reduce((s,w)=>s+w.intensity,0)/workouts.length:0;
+  const streak=workouts.length>=3?'🔥 3 days':'building...';
+  const handleSubmit=()=>{
+    const r=MOTIVATIONAL[Math.floor(Math.random()*MOTIVATIONAL.length)];
+    setWorkouts([{id:Date.now(),...form,date:new Date().toISOString().split('T')[0],resp:r},...workouts]);
+    setShowForm(false);setForm({gym:'',type:'HIIT',duration:45,intensity:5,mood_after:7,note:''});
+  };
+  return React.createElement('div',{style:{maxWidth:700,margin:'0 auto',padding:20}},
+    React.createElement('div',{style:{textAlign:'center',marginBottom:24}},
+      React.createElement('h2',{style:{fontFamily:"'Playfair Display'",fontSize:28,fontWeight:800}},"My Workout Journey"),
+      React.createElement('p',{style:{color:'rgba(255,255,255,0.5)',fontSize:14}},"log it, track it, own it. penelope's got your back.")),
+    React.createElement('div',{style:{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10,marginBottom:18}},
+      [{l:"Workouts",v:workouts.length,i:"🏋️"},{l:"Avg Mood",v:avgA.toFixed(1),i:"😊"},{l:"Avg Intensity",v:avgI.toFixed(1),i:"⚡"},{l:"Streak",v:streak,i:"🔥"}].map(s=>
+        React.createElement('div',{key:s.l,className:'glass',style:{padding:12,textAlign:'center'}},
+          React.createElement('div',{style:{fontSize:22}},s.i),
+          React.createElement('div',{style:{fontSize:16,fontWeight:800,marginTop:2}},s.v),
+          React.createElement('div',{style:{fontSize:10,color:'rgba(255,255,255,0.5)'}},s.l)))),
+    React.createElement('button',{className:'btn btn-primary',style:{width:'100%',marginBottom:16,padding:14,fontSize:15},onClick:()=>setShowForm(!showForm)},showForm?"Cancel":"✨ Log My Workout"),
+    showForm&&React.createElement('div',{className:'glass slide-up',style:{padding:18,marginBottom:18}},
+      React.createElement('h4',{style:{marginBottom:4,fontSize:14}},"how was your workout?"),
+      React.createElement('p',{style:{fontSize:11,color:'rgba(255,255,255,0.4)',marginBottom:12}},"just push the button and leave a quick note — i'll keep track of everything!"),
+      React.createElement('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:8}},
+        React.createElement('input',{placeholder:"Gym name",value:form.gym,onChange:e=>setForm({...form,gym:e.target.value})}),
+        React.createElement('select',{value:form.type,onChange:e=>setForm({...form,type:e.target.value})},
+          ["HIIT","Yoga","Cycling","Boxing","Weights","Pilates","Running","Dance"].map(t=>React.createElement('option',{key:t,value:t},t)))),
+      React.createElement('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8,marginBottom:8}},
+        React.createElement('div',null,React.createElement('label',{style:{fontSize:10,color:'rgba(255,255,255,0.5)'}},`Duration: ${form.duration}min`),React.createElement('input',{type:'range',min:15,max:120,step:5,value:form.duration,onChange:e=>setForm({...form,duration:+e.target.value}),style:{padding:4}})),
+        React.createElement('div',null,React.createElement('label',{style:{fontSize:10,color:'rgba(255,255,255,0.5)'}},`Intensity: ${form.intensity}/10`),React.createElement('input',{type:'range',min:1,max:10,value:form.intensity,onChange:e=>setForm({...form,intensity:+e.target.value}),style:{padding:4}})),
+        React.createElement('div',null,React.createElement('label',{style:{fontSize:10,color:'rgba(255,255,255,0.5)'}},`Mood after: ${form.mood_after}/10`),React.createElement('input',{type:'range',min:1,max:10,value:form.mood_after,onChange:e=>setForm({...form,mood_after:+e.target.value}),style:{padding:4}}))),
+      React.createElement('textarea',{placeholder:"tell me how you feel... (keep it real!)",rows:2,value:form.note,onChange:e=>setForm({...form,note:e.target.value}),style:{marginBottom:10}}),
+      React.createElement('button',{className:'btn btn-primary',onClick:handleSubmit},"Save & Get Penelope's Response ✨")),
+    React.createElement('div',{style:{display:'flex',flexDirection:'column',gap:12}},
+      ...workouts.map(w=>
+        React.createElement('div',{key:w.id,className:'glass',style:{padding:16}},
+          React.createElement('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:6}},
+            React.createElement('div',null,React.createElement('span',{style:{fontWeight:700,fontSize:14}},w.gym),React.createElement('span',{style:{marginLeft:8,fontSize:11,color:'rgba(255,255,255,0.4)'}},`${w.type} · ${w.duration}min`)),
+            React.createElement('span',{style:{fontSize:11,color:'rgba(255,255,255,0.4)'}},w.date)),
+          React.createElement('p',{style:{fontSize:13,color:'rgba(255,255,255,0.7)',marginBottom:8,fontStyle:'italic'}},`"${w.note}"`),
+          React.createElement('div',{style:{display:'flex',gap:8,marginBottom:8}},
+            React.createElement('div',{className:'badge',style:{background:'rgba(255,107,107,0.15)',color:'var(--coral)'}},`⚡${w.intensity}/10`),
+            React.createElement('div',{className:'badge',style:{background:'rgba(110,231,183,0.15)',color:'var(--mint)'}},`😊 ${w.mood_after}/10`)),
+          w.resp&&React.createElement('div',{style:{padding:10,background:'rgba(167,139,250,0.08)',borderRadius:12,borderLeft:'3px solid var(--lavender)'}},
+            React.createElement('p',{style:{fontSize:11,color:'var(--lavender)',fontWeight:600,marginBottom:3}},`${w.resp.i} penelope says:`),
+            React.createElement('p',{style:{fontSize:12,color:'rgba(255,255,255,0.8)',lineHeight:1.5}},w.resp.q))))))
+}
+
+// ─── CALORIE COUNTER / DIET TRACKER ───
+function CalorieTracker(){
+  const[meals,setMeals]=useState([
+    {id:1,time:'Breakfast',items:[{...FOOD_DB[7],qty:1},{...FOOD_DB[10],qty:1},{...FOOD_DB[22],qty:1}]},
+    {id:2,time:'Lunch',items:[{...FOOD_DB[18],qty:1}]},
+    {id:3,time:'Snack',items:[{...FOOD_DB[14],qty:1},{...FOOD_DB[11],qty:1}]},
+  ]);
+  const[showAdd,setShowAdd]=useState(null);
+  const[search,setSearch]=useState('');
+  const[goals]=useState({cal:1800,protein:120,carbs:200,fat:60});
+
+  const totals=meals.reduce((acc,meal)=>{
+    meal.items.forEach(item=>{
+      acc.cal+=item.cal*item.qty;
+      acc.protein+=item.protein*item.qty;
+      acc.carbs+=item.carbs*item.qty;
+      acc.fat+=item.fat*item.qty;
+    });
+    return acc;
+  },{cal:0,protein:0,carbs:0,fat:0});
+
+  const addItem=(mealTime,food)=>{
+    setMeals(prev=>prev.map(m=>{
+      if(m.time===mealTime)return{...m,items:[...m.items,{...food,qty:1}]};
+      return m;
+    }));
+    setShowAdd(null);setSearch('');
+  };
+
+  const addNewMeal=(time)=>{
+    setMeals(prev=>[...prev,{id:Date.now(),time,items:[]}]);
+  };
+
+  const removeItem=(mealId,idx)=>{
+    setMeals(prev=>prev.map(m=>{
+      if(m.id===mealId){const items=[...m.items];items.splice(idx,1);return{...m,items};}
+      return m;
+    }));
+  };
+
+  const filtered=FOOD_DB.filter(f=>!search||f.name.toLowerCase().includes(search.toLowerCase()));
+  const pctCal=Math.min((totals.cal/goals.cal)*100,100);
+  const pctP=Math.min((totals.protein/goals.protein)*100,100);
+  const pctC=Math.min((totals.carbs/goals.carbs)*100,100);
+  const pctF=Math.min((totals.fat/goals.fat)*100,100);
+
+  const penelopeDietTip=()=>{
+    if(totals.protein<goals.protein*0.5)return"girl you need more protein! grab a shake or some chicken. your muscles are literally asking for it.";
+    if(totals.cal>goals.cal)return"ok you went over today — no stress. tomorrow's a new day. just be a little more mindful and you'll balance it out.";
+    if(totals.cal<goals.cal*0.6)return"babe you need to eat more! under-eating is NOT the move. your body needs fuel to crush workouts.";
+    return"you're doing great today! balanced macros, good fuel. your body is thanking you rn.";
+  };
+
+  return React.createElement('div',{style:{maxWidth:700,margin:'0 auto',padding:20}},
+    React.createElement('div',{style:{textAlign:'center',marginBottom:24}},
+      React.createElement('h2',{style:{fontFamily:"'Playfair Display'",fontSize:28,fontWeight:800}},"🥗 Calorie Counter"),
+      React.createElement('p',{style:{color:'rgba(255,255,255,0.5)',fontSize:14}},"food is fuel babe. let's track it without being weird about it.")),
+
+    // Daily Summary Ring
+    React.createElement('div',{className:'glass',style:{padding:20,marginBottom:18}},
+      React.createElement('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:12,textAlign:'center'}},
+        [{l:"Calories",v:totals.cal,g:goals.cal,pct:pctCal,co:'var(--coral)',u:'kcal'},
+         {l:"Protein",v:Math.round(totals.protein),g:goals.protein,pct:pctP,co:'var(--mint)',u:'g'},
+         {l:"Carbs",v:Math.round(totals.carbs),g:goals.carbs,pct:pctC,co:'var(--sky)',u:'g'},
+         {l:"Fat",v:Math.round(totals.fat),g:goals.fat,pct:pctF,co:'var(--gold)',u:'g'}].map(m=>
+          React.createElement('div',{key:m.l},
+            React.createElement('div',{style:{fontSize:20,fontWeight:800,color:m.co}},m.v),
+            React.createElement('div',{style:{fontSize:10,color:'rgba(255,255,255,0.4)'}},`/ ${m.g}${m.u}`),
+            React.createElement('div',{className:'meter',style:{marginTop:6}},
+              React.createElement('div',{className:'meter-fill',style:{width:`${m.pct}%`,background:m.co}})),
+            React.createElement('div',{style:{fontSize:10,color:'rgba(255,255,255,0.5)',marginTop:3}},m.l)))),
+      // Penelope's diet tip
+      React.createElement('div',{style:{marginTop:14,padding:10,background:'rgba(167,139,250,0.08)',borderRadius:12,borderLeft:'3px solid var(--lavender)'}},
+        React.createElement('p',{style:{fontSize:11,color:'var(--lavender)',fontWeight:600}},"✨ penelope says:"),
+        React.createElement('p',{style:{fontSize:12,color:'rgba(255,255,255,0.7)',marginTop:2}},penelopeDietTip()))),
+
+    // Meals
+    ...meals.map(meal=>
+      React.createElement('div',{key:meal.id,className:'glass',style:{padding:16,marginBottom:12}},
+        React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}},
+          React.createElement('h4',{style:{fontSize:14,fontWeight:700}},meal.time),
+          React.createElement('span',{style:{fontSize:12,color:'rgba(255,255,255,0.4)'}},
+            `${meal.items.reduce((s,i)=>s+i.cal*i.qty,0)} cal`)),
+        meal.items.length===0&&React.createElement('p',{style:{fontSize:12,color:'rgba(255,255,255,0.3)',fontStyle:'italic'}},"nothing logged yet"),
+        ...meal.items.map((item,idx)=>
+          React.createElement('div',{key:idx,style:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'6px 0',borderBottom:'1px solid rgba(255,255,255,0.04)'}},
+            React.createElement('div',null,
+              React.createElement('span',{style:{fontSize:13}},item.name),
+              React.createElement('span',{style:{fontSize:10,color:'rgba(255,255,255,0.3)',marginLeft:6}},item.serving)),
+            React.createElement('div',{style:{display:'flex',alignItems:'center',gap:8}},
+              React.createElement('span',{style:{fontSize:12,fontWeight:600}},`${item.cal}cal`),
+              React.createElement('span',{style:{fontSize:10,color:'var(--mint)'}},`${item.protein}p`),
+              React.createElement('button',{onClick:()=>removeItem(meal.id,idx),style:{background:'none',border:'none',color:'rgba(255,255,255,0.3)',cursor:'pointer',fontSize:14}},"×")))),
+        showAdd===meal.time?
+          React.createElement('div',{style:{marginTop:10}},
+            React.createElement('input',{placeholder:"search foods...",value:search,onChange:e=>setSearch(e.target.value),style:{marginBottom:8,fontSize:12}}),
+            React.createElement('div',{style:{maxHeight:200,overflowY:'auto',display:'flex',flexDirection:'column',gap:4}},
+              ...filtered.map((f,i)=>
+                React.createElement('div',{key:i,onClick:()=>addItem(meal.time,f),style:{display:'flex',justifyContent:'space-between',padding:'8px 10px',background:'rgba(255,255,255,0.03)',borderRadius:8,cursor:'pointer',fontSize:12,border:'1px solid rgba(255,255,255,0.05)'}},
+                  React.createElement('span',null,`${f.name}`),
+                  React.createElement('span',{style:{color:'rgba(255,255,255,0.4)'}},`${f.cal}cal · ${f.protein}p · ${f.carbs}c · ${f.fat}f`)))),
+            React.createElement('button',{onClick:()=>{setShowAdd(null);setSearch('')},style:{marginTop:6,background:'none',border:'none',color:'rgba(255,255,255,0.4)',cursor:'pointer',fontSize:11}},"cancel")):
+          React.createElement('button',{onClick:()=>setShowAdd(meal.time),style:{marginTop:8,background:'none',border:'1px dashed rgba(255,255,255,0.15)',borderRadius:10,padding:'8px',width:'100%',color:'rgba(255,255,255,0.4)',cursor:'pointer',fontSize:12}},`+ add food`))),
+
+    // Add meal button
+    React.createElement('button',{onClick:()=>{
+      const meals_list=["Breakfast","Lunch","Dinner","Snack","Pre-Workout","Post-Workout"];
+      const existing=meals.map(m=>m.time);
+      const next=meals_list.find(m=>!existing.includes(m))||`Meal ${meals.length+1}`;
+      addNewMeal(next);
+    },className:'btn btn-outline',style:{width:'100%',marginTop:8,fontSize:13}},
+      "+ Add Meal"))
+}
+
+function RateGym(){
+  const[step,setStep]=useState(1);const[gymName,setGymName]=useState('');const[scores,setScores]=useState({});const[submitted,setSubmitted]=useState(false);
+  if(submitted){const r=calcP(scores);const b=getPBadge(parseFloat(r));
+    return React.createElement('div',{style:{maxWidth:500,margin:'60px auto',textAlign:'center',padding:20}},
+      React.createElement('div',{className:'glass glow slide-up',style:{padding:28}},
+        React.createElement('div',{style:{fontSize:56,marginBottom:10}},"🎉"),
+        React.createElement('h2',{style:{fontFamily:"'Playfair Display'",fontSize:26}},"Review Submitted!"),
+        React.createElement('div',{style:{margin:'14px auto',width:'fit-content',background:b.bg,color:b.c,padding:'6px 20px',borderRadius:20,fontWeight:700}},`P ${b.l} · ${r}`),
+        React.createElement('p',{style:{color:'rgba(255,255,255,0.6)',marginTop:8,fontSize:13}},`you rated ${gymName} across 15 dimensions. thanks for helping other women find great gyms!`),
+        React.createElement('button',{className:'btn btn-primary',style:{marginTop:14},onClick:()=>{setSubmitted(false);setStep(1);setGymName('');setScores({})}},"Rate Another")));}
+  return React.createElement('div',{style:{maxWidth:600,margin:'0 auto',padding:20}},
+    React.createElement('div',{style:{textAlign:'center',marginBottom:20}},
+      React.createElement('h2',{style:{fontFamily:"'Playfair Display'",fontSize:26,fontWeight:800}},"Rate a Gym"),
+      React.createElement('p',{style:{color:'rgba(255,255,255,0.5)',fontSize:13}},"your review helps other women find safe, clean spaces.")),
+    step===1&&React.createElement('div',{className:'glass slide-up',style:{padding:20}},
+      React.createElement('h3',{style:{marginBottom:12,fontSize:15}},"Which gym?"),
+      React.createElement('input',{placeholder:"Gym name...",value:gymName,onChange:e=>setGymName(e.target.value),style:{marginBottom:10}}),
+      React.createElement('button',{className:'btn btn-primary',disabled:!gymName,onClick:()=>setStep(2),style:{opacity:gymName?1:0.5}},"Next →")),
+    step===2&&React.createElement('div',{className:'glass slide-up',style:{padding:20}},
+      React.createElement('h3',{style:{marginBottom:12,fontSize:15}},"Rate each dimension (1-10)"),
+      React.createElement('div',{style:{maxHeight:380,overflowY:'auto',paddingRight:6}},
+        ...Object.entries(SCORE_LABELS).map(([k,l])=>
+          React.createElement('div',{key:k,style:{marginBottom:12}},
+            React.createElement('label',{style:{fontSize:12,fontWeight:500,marginBottom:4,display:'block'}},l),
+            React.createElement('div',{style:{display:'flex',gap:3}},
+              ...[1,2,3,4,5,6,7,8,9,10].map(n=>
+                React.createElement('button',{key:n,onClick:()=>setScores({...scores,[k]:n}),style:{width:30,height:30,borderRadius:8,border:'none',cursor:'pointer',fontWeight:600,fontSize:11,background:scores[k]>=n?(n>=8?'var(--mint)':n>=6?'var(--sky)':'var(--gold)'):'rgba(255,255,255,0.08)',color:scores[k]>=n?'#111':'rgba(255,255,255,0.5)',transition:'all 0.2s'}},n)))))),
+      React.createElement('button',{className:'btn btn-primary',style:{marginTop:14},onClick:()=>setSubmitted(true)},"Submit Review 🎉")))
+}
+
+function ChatPanel({onClose}){
+  const[msgs,setMsgs]=useState([{from:'p',text:"heyyy! i'm penelope — your gym bestie who actually knows her stuff. need recs, a pep talk, or just wanna vent about leg day? i'm here. 💜"}]);
+  const[input,setInput]=useState('');const ref=useRef(null);
+  useEffect(()=>{if(ref.current)ref.current.scrollTop=ref.current.scrollHeight},[msgs]);
+  const send=()=>{if(!input.trim())return;const m=input.trim();setInput('');setMsgs(p=>[...p,{from:'u',text:m}]);setTimeout(()=>setMsgs(p=>[...p,{from:'p',text:penelopeRespond(m)}]),500);};
+  return React.createElement('div',{style:{position:'fixed',bottom:0,right:0,width:'100%',maxWidth:400,height:'65vh',maxHeight:560,zIndex:100,display:'flex',flexDirection:'column',background:'rgba(30,27,46,0.98)',backdropFilter:'blur(20px)',border:'1px solid rgba(167,139,250,0.3)',borderRadius:'20px 20px 0 0',boxShadow:'0 -10px 40px rgba(0,0,0,0.5)'}},
+    React.createElement('div',{style:{padding:'12px 16px',borderBottom:'1px solid rgba(255,255,255,0.1)',display:'flex',justifyContent:'space-between',alignItems:'center'}},
+      React.createElement('div',{style:{display:'flex',alignItems:'center',gap:8}},
+        React.createElement('div',{style:{width:34,height:34,borderRadius:'50%',background:'linear-gradient(135deg,var(--lavender),var(--pink))',display:'flex',alignItems:'center',justifyContent:'center',fontSize:16}},"💜"),
+        React.createElement('div',null,React.createElement('p',{style:{fontWeight:700,fontSize:13}},"Ask Penelope"),React.createElement('p',{style:{fontSize:10,color:'var(--mint)'}},"● online"))),
+      React.createElement('button',{onClick:onClose,style:{background:'none',border:'none',color:'rgba(255,255,255,0.5)',cursor:'pointer',fontSize:18}},"✕")),
+    React.createElement('div',{ref,style:{flex:1,overflowY:'auto',padding:14,display:'flex',flexDirection:'column',gap:8}},
+      ...msgs.map((m,i)=>React.createElement('div',{key:i,className:`chat-bubble ${m.from==='p'?'chat-penelope':'chat-user'}`},
+        m.from==='p'&&React.createElement('span',{style:{fontSize:10,color:'var(--lavender)',fontWeight:600,display:'block',marginBottom:3}},"✨ penelope"),
+        React.createElement('span',null,m.text)))),
+    React.createElement('div',{style:{padding:10,borderTop:'1px solid rgba(255,255,255,0.1)',display:'flex',gap:6}},
+      React.createElement('input',{value:input,onChange:e=>setInput(e.target.value),onKeyDown:e=>e.key==='Enter'&&send(),placeholder:"ask me anything...",style:{flex:1}}),
+      React.createElement('button',{className:'btn btn-primary',onClick:send,style:{padding:'10px 16px',fontSize:13}},"Send")))
+}
+
+function TrialBanner(){
+  return React.createElement('div',{style:{background:'linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.15))',border:'1px solid rgba(167,139,250,0.3)',borderRadius:20,padding:22,margin:'20px auto',maxWidth:700,textAlign:'center'}},
+    React.createElement('div',{style:{fontSize:28,marginBottom:6}},"👑"),
+    React.createElement('h3',{style:{fontFamily:"'Playfair Display'",fontSize:20,marginBottom:6}},"Unlock Penelope's Personal Coach"),
+    React.createElement('p',{style:{color:'rgba(255,255,255,0.6)',fontSize:13,maxWidth:500,margin:'0 auto 14px'}},"AI trainer, custom workouts, diet tracking, and accountability — all in one. free for 7 days."),
+    React.createElement('div',{style:{display:'flex',justifyContent:'center',gap:8,flexWrap:'wrap',marginBottom:14}},
+      ["🧠 Custom plans","🎤 Voice check-ins","📊 Diet tracking","🏆 Streaks"].map(f=>
+        React.createElement('span',{key:f,className:'badge',style:{background:'rgba(251,191,36,0.15)',color:'var(--gold)',fontSize:11,padding:'5px 12px'}},f))),
+    React.createElement('button',{className:'btn btn-gold',style:{fontSize:15,padding:'12px 32px'}},"Start Free 7-Day Trial ✨"),
+    React.createElement('p',{style:{fontSize:10,color:'rgba(255,255,255,0.3)',marginTop:6}},"Cancel anytime. No credit card to start."))
+}
+
+function App(){
+  const[tab,setTab]=useState('Discover');const[showChat,setShowChat]=useState(false);
+  return React.createElement('div',{style:{minHeight:'100vh'}},
+    React.createElement('nav',{style:{position:'sticky',top:0,zIndex:50,background:'rgba(30,27,46,0.9)',backdropFilter:'blur(20px)',borderBottom:'1px solid rgba(255,255,255,0.08)',padding:'10px 16px'}},
+      React.createElement('div',{style:{maxWidth:1200,margin:'0 auto',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:8}},
+        React.createElement('div',{style:{display:'flex',alignItems:'center',gap:8}},
+          React.createElement('span',{style:{fontSize:26}},"💜"),
+          React.createElement('div',null,
+            React.createElement('h1',{style:{fontFamily:"'Playfair Display'",fontSize:20,fontWeight:800,background:'linear-gradient(135deg,var(--lavender),var(--pink))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}},"Penelope's"),
+            React.createElement('p',{style:{fontSize:9,letterSpacing:2,textTransform:'uppercase',color:'rgba(255,255,255,0.5)',marginTop:-2}},"GYM REVIEW"))),
+        React.createElement('div',{style:{display:'flex',gap:5,flexWrap:'wrap'}},
+          ["Discover","Find My Class","My Workouts","Diet","Rate a Gym"].map(t=>
+            React.createElement('button',{key:t,className:`tab ${tab===t?'active':''}`,onClick:()=>setTab(t)},t)),
+          React.createElement('button',{className:'btn-primary btn',style:{display:'flex',alignItems:'center',gap:4,fontSize:12,padding:'8px 14px'},onClick:()=>setShowChat(!showChat)},"✨ Ask Penelope")))),
+    tab==='Discover'&&React.createElement(React.Fragment,null,
+      React.createElement(DiscoverTab),React.createElement(TrialBanner)),
+    tab==='Find My Class'&&React.createElement(FindMyClass),
+    tab==='My Workouts'&&React.createElement(React.Fragment,null,
+      React.createElement(WorkoutTracker),React.createElement(TrialBanner)),
+    tab==='Diet'&&React.createElement(CalorieTracker),
+    tab==='Rate a Gym'&&React.createElement(RateGym),
+    showChat&&React.createElement(ChatPanel,{onClose:()=>setShowChat(false)}),
+    React.createElement('footer',{style:{textAlign:'center',padding:'28px 16px',borderTop:'1px solid rgba(255,255,255,0.05)',marginTop:32}},
+      React.createElement('p',{style:{fontFamily:"'Playfair Display'",fontSize:16,fontWeight:800,background:'linear-gradient(135deg,var(--lavender),var(--pink))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}},"Penelope's Gym Review"),
+      React.createElement('p',{style:{fontSize:11,color:'rgba(255,255,255,0.3)',marginTop:3}},"Penelope's Proprietary Program · The 3 P's · By women, for women"),
+      React.createElement('p',{style:{fontSize:10,color:'rgba(255,255,255,0.2)',marginTop:6}},"© 2026 Penelope's")))
+}
+
+function DiscoverTab(){
+  const[search,setSearch]=useState('');const[sort,setSort]=useState('rating');const[typeFilter,setTypeFilter]=useState('All');const[selected,setSelected]=useState(null);
+  const types=['All',...new Set(GYMS.map(g=>g.type))];
+  let filtered=GYMS.filter(g=>{
+    const m=g.name.toLowerCase().includes(search.toLowerCase())||g.area.toLowerCase().includes(search.toLowerCase())||(g.campus&&g.campus.toLowerCase().includes(search.toLowerCase()));
+    const t=typeFilter==='All'||g.type===typeFilter;return m&&t;});
+  if(sort==='rating')filtered.sort((a,b)=>calcP(b.scores)-calcP(a.scores));
+  else if(sort==='clean')filtered.sort((a,b)=>b.scores.cleanliness-a.scores.cleanliness);
+  else if(sort==='value')filtered.sort((a,b)=>b.scores.value-a.scores.value);
+  else if(sort==='reviews')filtered.sort((a,b)=>b.reviews-a.reviews);
+  if(selected)return React.createElement(GymDetail,{gym:selected,onBack:()=>setSelected(null)});
+  return React.createElement('div',null,
+    React.createElement('div',{style:{textAlign:'center',padding:'40px 20px 28px',position:'relative'}},
+      React.createElement('div',{style:{position:'absolute',top:20,left:'50%',transform:'translateX(-50)',width:300,height:300,background:'radial-gradient(circle,rgba(167,139,250,0.15),transparent)',borderRadius:'50%',filter:'blur(60px)'}}),
+      React.createElement('h2',{className:'float',style:{fontFamily:"'Playfair Display'",fontSize:36,fontWeight:900,background:'linear-gradient(135deg,var(--lavender),var(--pink),var(--coral))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',marginBottom:6}},"Find Your Perfect Gym"),
+      React.createElement('p',{style:{color:'rgba(255,255,255,0.6)',maxWidth:480,margin:'0 auto',fontSize:14}},"honest reviews from real women. 15 dimensions. safe, clean spaces that actually make you want to show up.")),
+    React.createElement('div',{style:{maxWidth:800,margin:'0 auto 20px',padding:'0 20px',display:'flex',gap:8,flexWrap:'wrap'}},
+      React.createElement('input',{placeholder:"Search gyms, areas, or schools...",value:search,onChange:e=>setSearch(e.target.value),style:{flex:1,minWidth:200}}),
+      React.createElement('select',{value:typeFilter,onChange:e=>setTypeFilter(e.target.value),style:{width:150}},types.map(t=>React.createElement('option',{key:t,value:t},t))),
+      React.createElement('select',{value:sort,onChange:e=>setSort(e.target.value),style:{width:150}},
+        React.createElement('option',{value:'rating'},"P-Rating"),React.createElement('option',{value:'clean'},"🧹 Cleanest"),React.createElement('option',{value:'value'},"💰 Best Value"),React.createElement('option',{value:'reviews'},"💬 Most Reviews"))),
+    React.createElement('p',{style:{maxWidth:800,margin:'0 auto 12px',padding:'0 20px',fontSize:11,color:'rgba(255,255,255,0.4)'}},`${filtered.length} gyms`),
+    React.createElement('div',{style:{maxWidth:800,margin:'0 auto',padding:'0 20px',display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(340,1fr))',gap:14,paddingBottom:32}},
+      ...filtered.map(g=>React.createElement(GymCard,{key:g.id,gym:g,onClick:()=>setSelected(g)}))))
+}
+
+ReactDOM.render(React.createElement(App),document.getElementById('root'));
+</script>
+</body>
+</html>
